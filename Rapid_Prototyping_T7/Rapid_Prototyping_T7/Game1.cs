@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Rapid_Prototyping_T7.Game;
 using System.IO;
+using Microsoft.Xna.Framework.Content;
+
 
 namespace Rapid_Prototyping_T7
 {
@@ -18,6 +20,8 @@ namespace Rapid_Prototyping_T7
 
         private const int numberOfLevels = 3;
 
+        private Player player = new Player();
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -31,15 +35,18 @@ namespace Rapid_Prototyping_T7
             // TODO: Add your initialization logic here
 
             base.Initialize();
+            player.Initialize();
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+            ContentManager content = new ContentManager(Services, "Content");
 
             // TODO: use this.Content to load your game content here
 
             LoadNextLevel();
+            player.LoadContent(content);
         }
 
         protected override void Update(GameTime gameTime)
@@ -50,6 +57,7 @@ namespace Rapid_Prototyping_T7
             // TODO: Add your update logic here
 
             base.Update(gameTime);
+            player.Update(gameTime);
         }
 
         private void LoadNextLevel()
@@ -73,11 +81,11 @@ namespace Rapid_Prototyping_T7
 
             _spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null);
 
+            base.Draw(gameTime);
             level.Draw(_spriteBatch);
+            player.Draw(gameTime, _spriteBatch);
 
             _spriteBatch.End();
-
-            base.Draw(gameTime);
         }
     }
 }

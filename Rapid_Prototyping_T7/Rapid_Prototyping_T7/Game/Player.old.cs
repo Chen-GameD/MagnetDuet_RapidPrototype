@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Rapid_Prototyping_T7.Game
 {
-    class Player
+    class Player_old
     {
         private Texture2D sprite;
         private bool isAlive;
