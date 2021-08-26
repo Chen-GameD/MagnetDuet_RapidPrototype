@@ -11,25 +11,31 @@ namespace Rapid_Prototyping_T7.Game
     class Player : IGameObject
     {
         private Texture2D sprite;
-        private Texture2D Sprite
+        public Texture2D Sprite
         {
             get { return sprite; }
             set { sprite = value; }
         }
         
-        private Vector2 position; 
-        private Vector2 Position
+        private Vector2 position;
+        public Vector2 Position
         {
             get { return position; }
             set { position = value; }
         }
         
         private Vector2 velocity;
-        private Vector2 Velocity
+        public Vector2 Velocity
         {
             get { return velocity; }
             set { velocity = value; }
         }
+
+        private float acceleration = 10f;
+        private float speed_decay = 0.95f;
+        private float max_speed = 10f;
+        private float min_speed = 10f;
+
 
         public Player()
         {
@@ -54,7 +60,29 @@ namespace Rapid_Prototyping_T7.Game
 
         public void Update(GameTime gameTime)
         {
-            
+            var kstate = Keyboard.GetState();
+
+            if (kstate.IsKeyDown(Keys.Left))
+            {
+                velocity.X -= acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                velocity.X = MathF.Max(velocity.X, -max_speed);
+            }
+            else if (kstate.IsKeyDown(Keys.Right))
+            {
+                velocity.X += acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                velocity.X = MathF.Min(velocity.X, max_speed);
+            }
+            else 
+            { 
+                velocity.X *= speed_decay;
+                if (velocity.X < min_speed)
+                { 
+                    velocity.X = 0.0f; 
+                } 
+            }
+
+            position += velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
         }
     }
 }
