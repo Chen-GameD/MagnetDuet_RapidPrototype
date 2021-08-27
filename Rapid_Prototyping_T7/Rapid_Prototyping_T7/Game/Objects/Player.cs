@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
@@ -17,9 +17,9 @@ namespace Rapid_Prototyping_T7.Game.Objects
             set { velocity = value; }
         }
 
-        private float acceleration = 20f;
+        private float acceleration = 1000f;
         private float speed_decay = 0.95f;
-        private float max_speed = 20f;
+        private float max_speed =  250f;
         private float min_speed = 10f;
 
 
