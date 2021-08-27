@@ -2,7 +2,10 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Rapid_Prototyping_T7.Game;
+using Rapid_Prototyping_T7.Game.Objects;
 using System.IO;
+using Microsoft.Xna.Framework.Content;
+
 
 namespace Rapid_Prototyping_T7
 {
@@ -18,6 +21,9 @@ namespace Rapid_Prototyping_T7
 
         private const int numberOfLevels = 3;
 
+        private Player player;
+        private Shadow shadow;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -25,8 +31,11 @@ namespace Rapid_Prototyping_T7
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             Window.AllowUserResizing = true;
-
+            player = new Player();
+            shadow = new Shadow(player);
         }
+
+            
 
         protected override void Initialize()
         {
@@ -40,14 +49,19 @@ namespace Rapid_Prototyping_T7
             _graphics.GraphicsDevice.Viewport = vp;
             _graphics.ApplyChanges();
             base.Initialize();
+            player.Initialize();
+            shadow.Initialize();
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+            ContentManager content = new ContentManager(Services, "Content");
 
             // TODO: use this.Content to load your game content here
             LoadNextLevel();
+            player.LoadContent(content);
+            shadow.LoadContent(content);
         }
 
         protected override void Update(GameTime gameTime)
@@ -55,11 +69,11 @@ namespace Rapid_Prototyping_T7
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            level.Update(gameTime);
-
             // TODO: Add your update logic here
-
+            level.Update(gameTime);
             base.Update(gameTime);
+            player.Update(gameTime);
+            shadow.Update(gameTime);
         }
 
         private void LoadNextLevel()
@@ -83,11 +97,12 @@ namespace Rapid_Prototyping_T7
 
             _spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null);
 
+            base.Draw(gameTime); 
             level.Draw(gameTime, _spriteBatch);
+            player.Draw(gameTime, _spriteBatch);
+            shadow.Draw(gameTime, _spriteBatch);
 
             _spriteBatch.End();
-
-            base.Draw(gameTime);
         }
     }
 }

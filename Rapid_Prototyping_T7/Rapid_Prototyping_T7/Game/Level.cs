@@ -122,7 +122,7 @@ namespace Rapid_Prototyping_T7.Game
 
         private Tile LoadTile(string tileName, TileCollision collision)
         {
-            return new Tile(Content.Load<Texture2D>("Tiles/" + tileName), collision);
+            return new Tile(Content.Load<Texture2D>("Sprites/Tiles/" + tileName), collision);
         }
 
         private Tile LoadVarietyTile(string tileName, int variationCount, TileCollision collision)
