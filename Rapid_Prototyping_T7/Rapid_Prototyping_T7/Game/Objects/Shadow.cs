@@ -15,6 +15,8 @@ namespace Rapid_Prototyping_T7.Game.Objects
         public Shadow(Player in_player)
         {
             player = in_player;
+            Initialize();
+            LoadContent();
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -41,9 +43,9 @@ namespace Rapid_Prototyping_T7.Game.Objects
             position.Y = player.Position.Y + 250;
         }
 
-        public override void LoadContent(ContentManager content)
+        public override void LoadContent()
         {
-            sprite = content.Load<Texture2D>("Sprites\\Player\\Silhouette-Stick-Figure");
+            sprite = player.Level.Content.Load<Texture2D>("Sprites/Player/Silhouette-Stick-Figure");
         }
 
         public override void Update(GameTime gameTime)

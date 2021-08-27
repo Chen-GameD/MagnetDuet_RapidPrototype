@@ -13,16 +13,16 @@ namespace Rapid_Prototyping_T7
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        private Camera _camera;
         Vector2 baseScreenSize = new Vector2(800, 480);
+        public static int ScreenWidth = 1600;
+        public static int ScreenHeight = 800;
 
         // Meta-level game state.
         private int levelIndex = -1;
         private Level level;
 
         private const int numberOfLevels = 3;
-
-        private Player player;
-        private Shadow shadow;
 
         public Game1()
         {
@@ -31,8 +31,6 @@ namespace Rapid_Prototyping_T7
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             Window.AllowUserResizing = true;
-            player = new Player();
-            shadow = new Shadow(player);
         }
 
             
@@ -40,17 +38,16 @@ namespace Rapid_Prototyping_T7
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            _graphics.PreferredBackBufferWidth = 1600;
-            _graphics.PreferredBackBufferHeight = 800;
+            _graphics.PreferredBackBufferWidth = ScreenWidth;
+            _graphics.PreferredBackBufferHeight = ScreenHeight;
             var vp = new Viewport();
             vp.X = vp.Y = 800;
             vp.Width = 800;
             vp.Height = 800;
             _graphics.GraphicsDevice.Viewport = vp;
             _graphics.ApplyChanges();
+            _camera = new Camera();
             base.Initialize();
-            player.Initialize();
-            shadow.Initialize();
         }
 
         protected override void LoadContent()
@@ -60,8 +57,8 @@ namespace Rapid_Prototyping_T7
 
             // TODO: use this.Content to load your game content here
             LoadNextLevel();
-            player.LoadContent(content);
-            shadow.LoadContent(content);
+            //player.LoadContent(content);
+            //shadow.LoadContent(content);
         }
 
         protected override void Update(GameTime gameTime)
@@ -71,9 +68,10 @@ namespace Rapid_Prototyping_T7
 
             // TODO: Add your update logic here
             level.Update(gameTime);
+            _camera.Follow(level.Player);
             base.Update(gameTime);
-            player.Update(gameTime);
-            shadow.Update(gameTime);
+            //player.Update(gameTime);
+            //shadow.Update(gameTime);
         }
 
         private void LoadNextLevel()
@@ -95,12 +93,12 @@ namespace Rapid_Prototyping_T7
         {
             _graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            _spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null);
+            _spriteBatch.Begin(transformMatrix: _camera.Transform);
 
             base.Draw(gameTime); 
             level.Draw(gameTime, _spriteBatch);
-            player.Draw(gameTime, _spriteBatch);
-            shadow.Draw(gameTime, _spriteBatch);
+            //player.Draw(gameTime, _spriteBatch);
+            //shadow.Draw(gameTime, _spriteBatch);
 
             _spriteBatch.End();
         }

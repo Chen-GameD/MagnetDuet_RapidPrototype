@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Rapid_Prototyping_T7.Game.Objects;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -31,6 +32,13 @@ namespace Rapid_Prototyping_T7.Game
             get { return player; }
         }
         Player player;
+        private Vector2 start; //start point
+
+        public Shadow Shadow
+        {
+            get { return shadow; }
+        }
+        Shadow shadow;
 
         public int Score
         {
@@ -50,7 +58,6 @@ namespace Rapid_Prototyping_T7.Game
                 int segmentIndex = levelIndex;
                 layers[i] = Content.Load<Texture2D>("Backgrounds/Layer" + i + "_" + segmentIndex);
             }
-
         }
 
         private void LoadTiles(Stream fileStream)
@@ -84,6 +91,9 @@ namespace Rapid_Prototyping_T7.Game
                     tiles[x, y] = LoadTile(tileType, x, y);
                 }
             }
+
+            if (Player == null)
+                throw new NotSupportedException("A level must have a starting point.");
         }
 
         private Tile LoadTile(char tileType, int x, int y)
@@ -94,25 +104,33 @@ namespace Rapid_Prototyping_T7.Game
                 case '.':
                     return new Tile(null, TileCollision.Passable);
 
-                // Impassable block
+                // Platform brick
                 case '#':
                     return LoadVarietyTile("BlockA", 7, TileCollision.Impassable);
 
+                // Battery Prop
                 case '@':
                     return LoadPropTile(x, y, PropType.Battery);
 
+                // Star Prop
                 case '*':
                     return LoadPropTile(x, y, PropType.Star);
 
+                // Electric field
                 case '%':
                     return LoadVarietyTile("BlockB", 2, TileCollision.Passable);
 
+                //Blue moving platform
                 case '$':
                     return LoadVarietyTile("BlockB", 2, TileCollision.Passable);
 
-                // Passable block
+                // Final Platform
                 case '&':
                     return LoadVarietyTile("BlockB", 2, TileCollision.Passable);
+
+                // Player 1 start point
+                case '1':
+                    return LoadStartTile(x, y);
 
                 // Unknown tile type character
                 default:
@@ -135,6 +153,18 @@ namespace Rapid_Prototyping_T7.Game
         {
             Point position = GetBounds(x, y).Center;
             props.Add(new Prop(this, new Vector2(position.X, position.Y), type));
+
+            return new Tile(null, TileCollision.Passable);
+        }
+
+        private Tile LoadStartTile(int x, int y)
+        {
+            if (Player != null)
+                throw new NotSupportedException("A level may only have one starting point.");
+
+            start = RectangleExtensions.GetBottomCenter(GetBounds(x, y));
+            player = new Player(this, start);
+            shadow = new Shadow(player);
 
             return new Tile(null, TileCollision.Passable);
         }
@@ -181,6 +211,8 @@ namespace Rapid_Prototyping_T7.Game
         public void Update(GameTime gameTime)
         {
             UpdateProp(gameTime);
+            player.Update(gameTime);
+            shadow.Update(gameTime);
         }
 
         private void UpdateProp(GameTime gameTime)
@@ -231,7 +263,10 @@ namespace Rapid_Prototyping_T7.Game
             {
                 spriteBatch.Draw(layers[i], Vector2.Zero, Color.White);
             }
-                
+
+            player.Draw(gameTime, spriteBatch);
+            shadow.Draw(gameTime, spriteBatch);
+
         }
 
         private void DrawTiles(SpriteBatch spriteBatch)

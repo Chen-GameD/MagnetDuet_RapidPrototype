@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Content;
 namespace Rapid_Prototyping_T7.Game.Objects
 {
     class Player : GameObject
-    {        
+    {    
         private Vector2 velocity;
         public Vector2 Velocity
         {
@@ -17,15 +17,33 @@ namespace Rapid_Prototyping_T7.Game.Objects
             set { velocity = value; }
         }
 
+        public Level Level
+        {
+            get { return level; }
+        }
+        Level level;
+
         private float acceleration = 2500;
         private float speed_decay = 0.95f;
         private float max_speed =  250f;
         private float min_speed = 35f;
 
-
-        public Player()
+        public Rectangle Rectangle
         {
+            get
+            {
+                return new Rectangle((int)Position.X, (int)Position.Y, sprite.Width, sprite.Height);
+            }
+        }
 
+
+        public Player(Level level, Vector2 position)
+        {
+            this.level = level;
+
+            LoadContent();
+
+            Reset(position);
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -48,13 +66,13 @@ namespace Rapid_Prototyping_T7.Game.Objects
 
         public override void Initialize()
         {
-            position = new Vector2(0, 0);
-            velocity = new Vector2(0, 0);
+            //position = new Vector2(0, 0);
+            //velocity = new Vector2(0, 0);
         }
 
-        public override void LoadContent(ContentManager content)
+        public override void LoadContent()
         {
-            sprite = content.Load<Texture2D>("Sprites\\Player\\Silhouette-Stick-Figure");
+            sprite = level.Content.Load<Texture2D>("Sprites/Player/Silhouette-Stick-Figure");
         }
 
         public override void Update(GameTime gameTime)
@@ -82,6 +100,12 @@ namespace Rapid_Prototyping_T7.Game.Objects
 
             position += velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
+        }
+
+        public void Reset(Vector2 position)
+        {
+            Position = position;
+            Velocity = Vector2.Zero;
         }
     }
 }

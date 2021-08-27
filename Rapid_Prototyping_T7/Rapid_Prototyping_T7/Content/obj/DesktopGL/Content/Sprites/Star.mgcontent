@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>G:/Rapid_Prototyping/Test_1/Rapid_Prototyping_T7/Rapid_Prototyping_T7/Content/Sprites/Star.png</SourceFile>
-  <SourceTime>2021-08-25T09:52:24.8435346-06:00</SourceTime>
+  <SourceTime>2021-08-27T14:02:29.2968889-06:00</SourceTime>
   <DestFile>G:/Rapid_Prototyping/Test_1/Rapid_Prototyping_T7/Rapid_Prototyping_T7/Content/bin/DesktopGL/Content/Sprites/Star.xnb</DestFile>
-  <DestTime>2021-08-26T17:49:05.866707-06:00</DestTime>
+  <DestTime>2021-08-27T14:11:14.6610269-06:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2020-08-10T16:17:54-06:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
