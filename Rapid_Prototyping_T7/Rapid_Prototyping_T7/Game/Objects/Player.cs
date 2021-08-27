@@ -31,9 +31,9 @@ namespace Rapid_Prototyping_T7.Game
             set { velocity = value; }
         }
 
-        private float acceleration = 10f;
+        private float acceleration = 20f;
         private float speed_decay = 0.95f;
-        private float max_speed = 10f;
+        private float max_speed = 20f;
         private float min_speed = 10f;
 
 
@@ -44,7 +44,20 @@ namespace Rapid_Prototyping_T7.Game
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(sprite, position, Color.White);
+            var scale = 0.25f;
+            var rotation = 0f;
+            var origin = new Vector2(sprite.Width / 2, sprite.Height / 2);
+            var depth = 0;
+            spriteBatch.Draw(sprite, 
+                position, 
+                null, 
+                Color.White, 
+                rotation,
+                origin,
+                scale, 
+                SpriteEffects.None, 
+                depth
+                );
         }
 
         public void Initialize()
