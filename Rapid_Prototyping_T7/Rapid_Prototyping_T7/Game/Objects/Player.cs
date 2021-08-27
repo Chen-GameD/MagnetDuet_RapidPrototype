@@ -17,10 +17,10 @@ namespace Rapid_Prototyping_T7.Game.Objects
             set { velocity = value; }
         }
 
-        private float acceleration = 1000f;
+        private float acceleration = 2500;
         private float speed_decay = 0.95f;
         private float max_speed =  250f;
-        private float min_speed = 10f;
+        private float min_speed = 35f;
 
 
         public Player()
@@ -74,7 +74,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
             else 
             { 
                 velocity.X *= speed_decay;
-                if (velocity.X < min_speed)
+                if (MathF.Abs(velocity.X) < min_speed)
                 { 
                     velocity.X = 0.0f; 
                 } 
