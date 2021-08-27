@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Rapid_Prototyping_T7.Game;
+using Rapid_Prototyping_T7.Game.Objects;
 using System.IO;
 using Microsoft.Xna.Framework.Content;
 
@@ -20,7 +21,8 @@ namespace Rapid_Prototyping_T7
 
         private const int numberOfLevels = 3;
 
-        private Player player = new Player();
+        private Player player;
+        private Shadow shadow;
 
         public Game1()
         {
@@ -28,7 +30,10 @@ namespace Rapid_Prototyping_T7
             _graphics.IsFullScreen = false;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-        }
+
+            player = new Player();
+            shadow = new Shadow(player);
+    }
 
         protected override void Initialize()
         {
@@ -36,6 +41,7 @@ namespace Rapid_Prototyping_T7
 
             base.Initialize();
             player.Initialize();
+            shadow.Initialize();
         }
 
         protected override void LoadContent()
@@ -47,6 +53,7 @@ namespace Rapid_Prototyping_T7
 
             LoadNextLevel();
             player.LoadContent(content);
+            shadow.LoadContent(content);
         }
 
         protected override void Update(GameTime gameTime)
@@ -57,6 +64,7 @@ namespace Rapid_Prototyping_T7
             
             base.Update(gameTime);
             player.Update(gameTime);
+            shadow.Update(gameTime);
         }
 
         private void LoadNextLevel()
@@ -83,6 +91,7 @@ namespace Rapid_Prototyping_T7
             base.Draw(gameTime);
             level.Draw(_spriteBatch);
             player.Draw(gameTime, _spriteBatch);
+            shadow.Draw(gameTime, _spriteBatch);
 
             _spriteBatch.End();
         }
