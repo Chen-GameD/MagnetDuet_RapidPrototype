@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
@@ -6,24 +6,10 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 
-namespace Rapid_Prototyping_T7.Game
+namespace Rapid_Prototyping_T7.Game.Objects
 {
-    class Player : IGameObject
-    {
-        private Texture2D sprite;
-        public Texture2D Sprite
-        {
-            get { return sprite; }
-            set { sprite = value; }
-        }
-        
-        private Vector2 position;
-        public Vector2 Position
-        {
-            get { return position; }
-            set { position = value; }
-        }
-        
+    class Player : GameObject
+    {        
         private Vector2 velocity;
         public Vector2 Velocity
         {
@@ -42,7 +28,7 @@ namespace Rapid_Prototyping_T7.Game
 
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             var scale = 0.25f;
             var rotation = 0f;
@@ -60,18 +46,18 @@ namespace Rapid_Prototyping_T7.Game
                 );
         }
 
-        public void Initialize()
+        public override void Initialize()
         {
             position = new Vector2(0, 0);
             velocity = new Vector2(0, 0);
         }
 
-        public void LoadContent(ContentManager content)
+        public override void LoadContent(ContentManager content)
         {
             sprite = content.Load<Texture2D>("Sprites\\Player\\Silhouette-Stick-Figure");
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             var kstate = Keyboard.GetState();
 
