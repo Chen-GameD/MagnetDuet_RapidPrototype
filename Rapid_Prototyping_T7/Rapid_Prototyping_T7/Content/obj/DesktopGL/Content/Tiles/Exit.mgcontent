@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/CMY/Desktop/Rapid_Prototyping_T7/Rapid_Prototyping_T7/Content/Tiles/Exit.png</SourceFile>
+  <SourceFile>G:/Rapid_Prototyping/Test_1/Rapid_Prototyping_T7/Rapid_Prototyping_T7/Content/Tiles/Exit.png</SourceFile>
   <SourceTime>2021-08-25T09:52:24.8595494-06:00</SourceTime>
-  <DestFile>C:/Users/CMY/Desktop/Rapid_Prototyping_T7/Rapid_Prototyping_T7/Content/bin/DesktopGL/Content/Tiles/Exit.xnb</DestFile>
-  <DestTime>2021-08-25T16:32:34.1263972-06:00</DestTime>
+  <DestFile>G:/Rapid_Prototyping/Test_1/Rapid_Prototyping_T7/Rapid_Prototyping_T7/Content/bin/DesktopGL/Content/Tiles/Exit.xnb</DestFile>
+  <DestTime>2021-08-26T17:15:07.0824973-06:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2020-08-10T16:17:54-06:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

@@ -24,12 +24,21 @@ namespace Rapid_Prototyping_T7
             _graphics.IsFullScreen = false;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            Window.AllowUserResizing = true;
+
         }
 
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            _graphics.PreferredBackBufferWidth = 1600;
+            _graphics.PreferredBackBufferHeight = 800;
+            var vp = new Viewport();
+            vp.X = vp.Y = 800;
+            vp.Width = 800;
+            vp.Height = 800;
+            _graphics.GraphicsDevice.Viewport = vp;
+            _graphics.ApplyChanges();
             base.Initialize();
         }
 
@@ -38,7 +47,6 @@ namespace Rapid_Prototyping_T7
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-
             LoadNextLevel();
         }
 
@@ -46,6 +54,8 @@ namespace Rapid_Prototyping_T7
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
+            level.Update(gameTime);
 
             // TODO: Add your update logic here
 
@@ -73,7 +83,7 @@ namespace Rapid_Prototyping_T7
 
             _spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null);
 
-            level.Draw(_spriteBatch);
+            level.Draw(gameTime, _spriteBatch);
 
             _spriteBatch.End();
 

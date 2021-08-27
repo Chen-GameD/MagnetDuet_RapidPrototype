@@ -15,6 +15,8 @@ namespace Rapid_Prototyping_T7.Game
 
         private const int EntityLayer = 2;
 
+        private List<Prop> props = new List<Prop>();
+
         // Level game state.
         private Random random = new Random(354668); // Arbitrary, but constant seed
 
@@ -23,6 +25,18 @@ namespace Rapid_Prototyping_T7.Game
             get { return content; }
         }
         ContentManager content;
+
+        public Player Player
+        {
+            get { return player; }
+        }
+        Player player;
+
+        public int Score
+        {
+            get { return score; }
+        }
+        int score;
 
         public Level(IServiceProvider serviceProvider, Stream fileStream, int levelIndex)
         {
@@ -84,8 +98,20 @@ namespace Rapid_Prototyping_T7.Game
                 case '#':
                     return LoadVarietyTile("BlockA", 7, TileCollision.Impassable);
 
+                case '@':
+                    return LoadPropTile(x, y, PropType.Battery);
+
+                case '*':
+                    return LoadPropTile(x, y, PropType.Star);
+
+                case '%':
+                    return LoadVarietyTile("BlockB", 2, TileCollision.Passable);
+
+                case '$':
+                    return LoadVarietyTile("BlockB", 2, TileCollision.Passable);
+
                 // Passable block
-                case ':':
+                case '&':
                     return LoadVarietyTile("BlockB", 2, TileCollision.Passable);
 
                 // Unknown tile type character
@@ -103,6 +129,14 @@ namespace Rapid_Prototyping_T7.Game
         {
             int index = random.Next(variationCount);
             return LoadTile(tileName + index, collision);
+        }
+
+        private Tile LoadPropTile(int x, int y, PropType type)
+        {
+            Point position = GetBounds(x, y).Center;
+            props.Add(new Prop(this, new Vector2(position.X, position.Y), type));
+
+            return new Tile(null, TileCollision.Passable);
         }
 
         public void Dispose()
@@ -144,12 +178,42 @@ namespace Rapid_Prototyping_T7.Game
         }
 
 
-        public void Update()
+        public void Update(GameTime gameTime)
         {
-
+            UpdateProp(gameTime);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        private void UpdateProp(GameTime gameTime)
+        {
+            for (int i = 0; i < props.Count; i++)
+            {
+                Prop prop = props[i];
+
+                prop.Update(gameTime);
+
+                //if (prop.BoundingCircle.Intersects(Player.BoundingRectanle))
+                //{
+                    //props.RemoveAt(i--);
+                   // OnPropCollected(prop, Player);
+               // }
+            }
+        }
+
+        private void OnPropCollected(Prop prop, Player collectedBy)
+        {
+            switch(prop.Type)
+            {
+                case PropType.Battery:
+                    //To do(Get some ability)
+
+                    break;
+                case PropType.Star:
+                    score += prop.PointValue;
+                    break;
+            }
+        }
+
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             for (int i = 0; i <= EntityLayer; i++)
             {
@@ -157,6 +221,11 @@ namespace Rapid_Prototyping_T7.Game
             }
 
             DrawTiles(spriteBatch);
+
+            foreach (Prop prop in props)
+            {
+                prop.Draw(gameTime, spriteBatch);
+            }
 
             for (int i = EntityLayer + 1; i < layers.Length; ++i)
             {

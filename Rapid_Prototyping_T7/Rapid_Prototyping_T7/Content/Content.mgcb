@@ -124,11 +124,29 @@
 #begin Levels/0.txt
 /copy:Levels/0.txt
 
-#begin Levels/1.txt
-/copy:Levels/1.txt
+#begin Sprites/Battery.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Sprites/Battery.png
 
-#begin Levels/2.txt
-/copy:Levels/2.txt
+#begin Sprites/Star.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Sprites/Star.png
 
 #begin Tiles/BlockA0.png
 /importer:TextureImporter
