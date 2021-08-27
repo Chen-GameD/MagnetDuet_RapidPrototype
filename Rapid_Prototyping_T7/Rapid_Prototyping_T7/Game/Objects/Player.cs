@@ -5,6 +5,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using Rapid_Prototyping_T7.Game.Interfaces;
+using Rapid_Prototyping_T7.Game.Constants;
 
 namespace Rapid_Prototyping_T7.Game.Objects
 {
@@ -33,7 +35,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
             var scale = 0.25f;
             var rotation = 0f;
             var origin = new Vector2(sprite.Width / 2, sprite.Height / 2);
-            var depth = 0;
+            var depth = (int)Layers.player;
             spriteBatch.Draw(sprite, 
                 position, 
                 null, 

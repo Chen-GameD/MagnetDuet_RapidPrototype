@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Rapid_Prototyping_T7.Game;
 using Rapid_Prototyping_T7.Game.Objects;
-using System.IO;
+using Rapid_Prototyping_T7.Game.GameLogic;
 using Microsoft.Xna.Framework.Content;
 
 
@@ -15,11 +15,9 @@ namespace Rapid_Prototyping_T7
         private SpriteBatch _spriteBatch;
         Vector2 baseScreenSize = new Vector2(800, 480);
 
-        // Meta-level game state.
-        private int levelIndex = -1;
-        private Level level;
-
-        private const int numberOfLevels = 3;
+        BackgroundContainer background;
+        //LevelMaker levelMaker;
+        //Level level;
 
         private Player player;
         private Shadow shadow;
@@ -31,6 +29,10 @@ namespace Rapid_Prototyping_T7
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
+            background = new BackgroundContainer();
+            //levelMaker = new LevelMaker();
+            //level = levelMaker.LoadNextLevel();
+
             player = new Player();
             shadow = new Shadow(player);
     }
@@ -40,6 +42,8 @@ namespace Rapid_Prototyping_T7
             // TODO: Add your initialization logic here
 
             base.Initialize();
+            background.Initialize();
+            //level.Initialize();
             player.Initialize();
             shadow.Initialize();
         }
@@ -49,9 +53,8 @@ namespace Rapid_Prototyping_T7
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             ContentManager content = new ContentManager(Services, "Content");
 
-            // TODO: use this.Content to load your game content here
-
-            LoadNextLevel();
+            background.LoadContent(content);
+            //level.LoadContent(content);
             player.LoadContent(content);
             shadow.LoadContent(content);
         }
@@ -63,23 +66,10 @@ namespace Rapid_Prototyping_T7
 
             
             base.Update(gameTime);
+            background.Update(gameTime);
+            //level.Update(gameTime);
             player.Update(gameTime);
             shadow.Update(gameTime);
-        }
-
-        private void LoadNextLevel()
-        {
-            // move to the next level
-            levelIndex = (levelIndex + 1) % numberOfLevels;
-
-            // Unloads the content for the current level before loading the next one.
-            if (level != null)
-                level.Dispose();
-
-            // Load the level.
-            string levelPath = string.Format("Content/Levels/{0}.txt", levelIndex);
-            using (Stream fileStream = TitleContainer.OpenStream(levelPath))
-                level = new Level(Services, fileStream, levelIndex);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -89,7 +79,8 @@ namespace Rapid_Prototyping_T7
             _spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null);
 
             base.Draw(gameTime);
-            level.Draw(_spriteBatch);
+            background.Draw(gameTime, _spriteBatch);
+            //level.Draw(gameTime, _spriteBatch);
             player.Draw(gameTime, _spriteBatch);
             shadow.Draw(gameTime, _spriteBatch);
 

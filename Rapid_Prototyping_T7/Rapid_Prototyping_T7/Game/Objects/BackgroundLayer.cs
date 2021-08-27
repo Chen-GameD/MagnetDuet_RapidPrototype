@@ -6,51 +6,47 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Rapid_Prototyping_T7.Game.Interfaces;
-using Rapid_Prototyping_T7.Game.Constants;
 
 namespace Rapid_Prototyping_T7.Game.Objects
 {
-    class Shadow : GameObject
+    class BackgroundLayer : GameObject
     {
-        private Player player;
+        private int layer;
 
-        public Shadow(Player in_player)
+        public BackgroundLayer(int in_layer)
         {
-            player = in_player;
+            layer = in_layer;
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            var scale = 0.25f;
+            var scale = 1f;
             var rotation = 0f;
-            var origin = new Vector2(sprite.Width / 2, sprite.Height / 2);
-            var depth = (int)Layers.player;
+            var origin = new Vector2(0, 0);
+            var depth = layer;
             spriteBatch.Draw(sprite,
                 position,
                 null,
-                Color.Black,
+                Color.White,
                 rotation,
                 origin,
                 scale,
-                SpriteEffects.FlipVertically,
+                SpriteEffects.None,
                 depth
                 );
         }
 
         public override void Initialize()
         {
-            position.X = player.Position.X;
-            position.Y = player.Position.Y + 250;
+            position = new Vector2(0, 0);
         }
 
         public override void LoadContent(ContentManager content)
         {
-            sprite = content.Load<Texture2D>("Sprites\\Player\\Silhouette-Stick-Figure");
+            sprite = content.Load<Texture2D>("Backgrounds/Layer" + layer + "_0");
         }
 
         public override void Update(GameTime gameTime)
-        {
-            position.X = player.Position.X;
-        }
+        {}
     }
 }

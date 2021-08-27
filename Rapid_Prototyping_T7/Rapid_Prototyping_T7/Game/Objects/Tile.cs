@@ -3,8 +3,11 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Xna.Framework.Content;
+using Rapid_Prototyping_T7.Game.Interfaces;
+using Rapid_Prototyping_T7.Game.Constants;
 
-namespace Rapid_Prototyping_T7.Game
+namespace Rapid_Prototyping_T7.Game.Objects
 {
 
     enum TileCollision
@@ -13,7 +16,7 @@ namespace Rapid_Prototyping_T7.Game
         Impassable = 1,    //can not pass
     }
 
-    struct Tile
+    class Tile : GameObject
     {
         public Texture2D Texture;
         public TileCollision Collision;
@@ -28,5 +31,33 @@ namespace Rapid_Prototyping_T7.Game
             Texture = texture;
             Collision = collision;
         }
+
+        public override void Initialize() 
+        { }
+
+        public override void LoadContent(ContentManager content)
+        { }
+
+        public override void Update(GameTime gameTime)
+        { }
+
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            var scale = 1f;
+            var rotation = 0f;
+            var origin = new Vector2(sprite.Width / 2, sprite.Height / 2);
+            var depth = (int)Layers.level;
+            spriteBatch.Draw(sprite,
+                position,
+                null,
+                Color.White,
+                rotation,
+                origin,
+                scale,
+                SpriteEffects.None,
+                depth
+                );
+        }
+
     }
 }

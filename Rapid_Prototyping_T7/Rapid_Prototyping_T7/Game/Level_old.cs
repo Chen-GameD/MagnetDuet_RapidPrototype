@@ -5,10 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Rapid_Prototyping_T7.Game.Interfaces;
 
-namespace Rapid_Prototyping_T7.Game
+namespace Rapid_Prototyping_T7.Game.Objects
 {
-    class Level : IDisposable
+    class Level_old : GameObjectContainer
     {
         private Tile[,] tiles;
         private Texture2D[] layers;
@@ -24,7 +25,7 @@ namespace Rapid_Prototyping_T7.Game
         }
         ContentManager content;
 
-        public Level(IServiceProvider serviceProvider, Stream fileStream, int levelIndex)
+        public Level_old(IServiceProvider serviceProvider, Stream fileStream, int levelIndex)
         {
             content = new ContentManager(serviceProvider, "Content");
 
