@@ -6,7 +6,6 @@ using Rapid_Prototyping_T7.Game.Objects;
 using System.IO;
 using Microsoft.Xna.Framework.Content;
 
-
 namespace Rapid_Prototyping_T7
 {
     public class Game1 : Microsoft.Xna.Framework.Game
@@ -95,12 +94,42 @@ namespace Rapid_Prototyping_T7
 
             _spriteBatch.Begin(transformMatrix: _camera.Transform);
 
-            base.Draw(gameTime); 
+            base.Draw(gameTime);
             level.Draw(gameTime, _spriteBatch);
+            _spriteBatch.Draw(createCircleText(50), level.Player.Position, Color.White);
             //player.Draw(gameTime, _spriteBatch);
             //shadow.Draw(gameTime, _spriteBatch);
 
             _spriteBatch.End();
+        }
+
+        Texture2D createCircleText(int radius)
+        {
+            Texture2D texture = new Texture2D(GraphicsDevice, radius, radius);
+            Color[] colorData = new Color[radius * radius];
+
+            float diam = radius / 2f;
+            float diamsq = diam * diam;
+
+            for (int x = 0; x < radius; x++)
+            {
+                for (int y = 0; y < radius; y++)
+                {
+                    int index = x * radius + y;
+                    Vector2 pos = new Vector2(x - diam, y - diam);
+                    if (pos.LengthSquared() <= diamsq)
+                    {
+                        colorData[index] = Color.White;
+                    }
+                    else
+                    {
+                        colorData[index] = Color.Transparent;
+                    }
+                }
+            }
+
+            texture.SetData(colorData);
+            return texture;
         }
     }
 }

@@ -2,6 +2,7 @@
 using Rapid_Prototyping_T7.Game.Objects;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace Rapid_Prototyping_T7.Game
@@ -25,7 +26,9 @@ namespace Rapid_Prototyping_T7.Game
                 Game1.ScreenHeight / 2,
                 0);
 
-            Transform = position * offset;
+            Transform = new Matrix(new Vector4(1, 0, 0, 0), new Vector4(0, 1, 0, 0), new Vector4(0, 0, 1, 0), new Vector4(-100, -100, 0, 1));
+            //Transform = position * offset;
+            Trace.WriteLine(Transform);
         }
     }
 }
