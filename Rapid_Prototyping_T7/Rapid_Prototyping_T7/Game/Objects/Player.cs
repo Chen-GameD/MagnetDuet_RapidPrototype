@@ -66,9 +66,9 @@ namespace Rapid_Prototyping_T7.Game.Objects
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            var scale = 0.25f;
+            var scale = 1f;
             var rotation = 0f;
-            var origin = new Vector2(sprite.Width / 2, sprite.Height / 2);
+            var origin = new Vector2(sprite.Width / 2, sprite.Height);
             var depth = 0;
             spriteBatch.Draw(sprite,
                 position, 
@@ -90,7 +90,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
 
         public override void LoadContent()
         {
-            sprite = level.Content.Load<Texture2D>("Sprites/Player/Silhouette-Stick-Figure");
+            sprite = level.Content.Load<Texture2D>("Sprites/Player/Idle");
             int width = (int)(sprite.Width);
             int left = (sprite.Width - width) / 2;
             int height = (int)(sprite.Height);
@@ -156,7 +156,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
                             float absDepthX = Math.Abs(depth.X);
                             float absDepthY = Math.Abs(depth.Y);
 
-                            if (collision == TileCollision.Impassable) // Ignore platforms.
+                            if (collision == TileCollision.Impassable)
                             {
                                 // Resolve the collision along the X axis.
                                 Position = new Vector2(Position.X + depth.X, Position.Y);

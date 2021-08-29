@@ -93,14 +93,23 @@ namespace Rapid_Prototyping_T7
             _graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
 
             _spriteBatch.Begin(transformMatrix: _camera.Transform);
+            //_spriteBatch.Begin();
 
             base.Draw(gameTime);
             level.Draw(gameTime, _spriteBatch);
-            _spriteBatch.Draw(createCircleText(50), level.Player.Position, Color.White);
+            //_spriteBatch.Draw(createCircleText(50), level.Player.Position, Color.White);
             //player.Draw(gameTime, _spriteBatch);
             //shadow.Draw(gameTime, _spriteBatch);
 
+            DrawCollisionLine(_graphics, level.Player.Rectangle, _spriteBatch, new Vector2(level.Player.Sprite.Width / 2, level.Player.Sprite.Height));
+
             _spriteBatch.End();
+        }
+        public void DrawCollisionLine(GraphicsDeviceManager mag, Rectangle rec, SpriteBatch spr, Vector2 origin)
+        {
+            DrawCollision col = new DrawCollision(mag, rec);
+            col.Update(rec, origin);
+            col.Draw(spr);
         }
 
         Texture2D createCircleText(int radius)
