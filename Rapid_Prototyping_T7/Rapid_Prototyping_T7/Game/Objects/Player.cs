@@ -66,7 +66,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            var scale = 1f;
+            var scale = 0.25f;
             var rotation = 0f;
             var origin = new Vector2(sprite.Width / 2, sprite.Height);
             var depth = 0;
@@ -90,7 +90,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
 
         public override void LoadContent()
         {
-            sprite = level.Content.Load<Texture2D>("Sprites/Player/Idle");
+            sprite = level.Content.Load<Texture2D>("Sprites/Player/Silhouette-Stick-Figure");
             int width = (int)(sprite.Width);
             int left = (sprite.Width - width) / 2;
             int height = (int)(sprite.Height);
