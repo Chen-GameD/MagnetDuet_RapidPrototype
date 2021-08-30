@@ -18,25 +18,31 @@ namespace Rapid_Prototyping_T7.Game.Objects
 
     class Tile : GameObject
     {
-        public Texture2D Texture;
-        public TileCollision Collision;
+        public Vector2 size; // (width, height)
+        private string image;
 
-        public const int Width = 40;
-        public const int Height = 32;
-
-        public static readonly Vector2 Size = new Vector2(Width, Height);
-
-        public Tile(Texture2D texture, TileCollision collision)
+        public Tile(Vector2 in_position, Vector2 in_size, string sprite_image)
         {
-            Texture = texture;
-            Collision = collision;
+            position = in_position;
+            size = in_size;
+        }
+
+        public Tile(Rectangle rectangle, string sprite_image)
+        {
+            var x = rectangle.X + (rectangle.Width/2);
+            var y = rectangle.Y + (rectangle.Height/2);
+            position = new Vector2(x, y);
+
+            size = new Vector2(rectangle.Width, rectangle.Height);
         }
 
         public override void Initialize() 
         { }
 
         public override void LoadContent(ContentManager content)
-        { }
+        {
+            sprite = content.Load<Texture2D>("Sprites/Tiles/" + image); 
+        }
 
         public override void Update(GameTime gameTime)
         { }

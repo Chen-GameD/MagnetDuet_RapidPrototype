@@ -73,60 +73,8 @@ namespace Rapid_Prototyping_T7.Game.Objects
             }
         }
 
-        private Tile LoadTile(char tileType, int x, int y)
-        {
-            switch (tileType)
-            {
-                // Blank space
-                case '.':
-                    return new Tile(null, TileCollision.Passable);
+ 
 
-                // Impassable block
-                case '#':
-                    return LoadVarietyTile("BlockA", 7, TileCollision.Impassable);
-
-                // Passable block
-                case ':':
-                    return LoadVarietyTile("BlockB", 2, TileCollision.Passable);
-
-                // Unknown tile type character
-                default:
-                    throw new NotSupportedException(String.Format("Unsupported tile type character '{0}' at position {1}, {2}.", tileType, x, y));
-            }
-        }
-
-        private Tile LoadTile(string tileName, TileCollision collision)
-        {
-            return new Tile(Content.Load<Texture2D>("Sprites/Tiles/" + tileName), collision);
-        }
-
-        private Tile LoadVarietyTile(string tileName, int variationCount, TileCollision collision)
-        {
-            int index = random.Next(variationCount);
-            return LoadTile(tileName + index, collision);
-        }
-
-        public void Dispose()
-        {
-            Content.Unload();
-        }
-
-        public TileCollision GetCollision(int x, int y)
-        {
-            // Prevent escaping past the level ends.
-            if (x < 0 || x >= Width)
-                return TileCollision.Impassable;
-            // Allow jumping past the level top and falling through the bottom.
-            if (y < 0 || y >= Height)
-                return TileCollision.Passable;
-
-            return tiles[x, y].Collision;
-        }
-
-        public Rectangle GetBounds(int x, int y)
-        {
-            return new Rectangle(x * Tile.Width, y * Tile.Height, Tile.Width, Tile.Height);
-        }
 
         /// <summary>
         /// Width of level measured in tiles.
@@ -145,44 +93,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
         }
 
 
-        public void Update()
-        {
-
-        }
-
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            for (int i = 0; i <= EntityLayer; i++)
-            {
-                spriteBatch.Draw(layers[i], Vector2.Zero, Color.White);
-            }
-
-            DrawTiles(spriteBatch);
-
-            for (int i = EntityLayer + 1; i < layers.Length; ++i)
-            {
-                spriteBatch.Draw(layers[i], Vector2.Zero, Color.White);
-            }
-                
-        }
-
-        private void DrawTiles(SpriteBatch spriteBatch)
-        {
-            for (int y = 0; y < Height; ++y)
-            {
-                // For each tile position
-                for (int x = 0; x < Width; ++x)
-                {
-                    // If there is a visible tile in that position
-                    Texture2D texture = tiles[x, y].Texture;
-                    if (texture != null)
-                    {
-                        // Draw it in screen space.
-                        Vector2 position = new Vector2(x, y) * Tile.Size;
-                        spriteBatch.Draw(texture, position, Color.White);
-                    }
-                }
-            }
-        }
+      
+      
     }
 }
