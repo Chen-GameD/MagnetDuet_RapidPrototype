@@ -42,6 +42,9 @@ namespace Rapid_Prototyping_T7.Game.Objects
         public float acceleration_gravity = 10f;
         public float distance_decay_exponant = 1.5f;
 
+        public float battery_duration = 1f;
+        public float super_jump_force_multiplyer = 2f;
+
         private Vector2 previous_position;
         public float scale = .05f;
 
@@ -51,23 +54,16 @@ namespace Rapid_Prototyping_T7.Game.Objects
         }
         bool isOnGround;
 
-        public Rectangle Rectangle
-        {
-            get
-            {      
-                return new Rectangle((int)Position.X, (int)Position.Y, (int)(sprite.Width * scale), (int)(sprite.Height * scale));
-            }
-        }
-        private Rectangle localBounds;
-
         public Rectangle BoundingRectangle
         {
             get
             {
-                int left = (int)Math.Round(Position.X - (sprite.Width * scale / 2)) + localBounds.X;
-                int top = (int)Math.Round(Position.Y - sprite.Height * scale) + localBounds.Y;
+                int width = (int)(sprite.Width * scale);
+                int height = (int)(sprite.Height * scale);
+                int left = (int)Math.Round(Position.X - (width / 2));
+                int top = (int)Math.Round(Position.Y - (height / 2));
 
-                return new Rectangle(left, top, localBounds.Width, localBounds.Height);
+                return new Rectangle(left, top, width, height);
             }
         }
 
@@ -84,7 +80,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             var rotation = 0f;
-            var origin = new Vector2(sprite.Width / 2, sprite.Height);
+            var origin = new Vector2(sprite.Width / 2, sprite.Height / 2);
             var depth = 0;
             spriteBatch.Draw(sprite,
                 position,
@@ -100,18 +96,11 @@ namespace Rapid_Prototyping_T7.Game.Objects
 
         public override void Initialize()
         {
-            //position = new Vector2(0, 0);
-            //velocity = new Vector2(0, 0);
         }
 
         public override void LoadContent()
         {
             sprite = level.Content.Load<Texture2D>("Sprites/Player/Silhouette-Stick-Figure");
-            int width = (int)(sprite.Width * scale);
-            int left = ((int)(sprite.Width * scale) - width) / 2;
-            int height = (int)(sprite.Height * scale);
-            int top = (int)(sprite.Height * scale) - height;
-            localBounds = new Rectangle(left, top, width, height);
         }
 
         public override void Update(GameTime gameTime)
@@ -143,6 +132,13 @@ namespace Rapid_Prototyping_T7.Game.Objects
             if (kstate.IsKeyDown(Keys.Space))
             {
                 var repulsion = -1 * repulse_force / MathF.Pow(distance_to_shadow, distance_decay_exponant) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (battery_duration > 0)
+                {
+                    repulsion *= super_jump_force_multiplyer;
+                    battery_duration -= 1 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if (battery_duration < 0f)
+                        battery_duration = 0f;
+                }
                 velocity.Y += MathF.Max(repulsion, -max_repulsion);
             }
             else
@@ -237,12 +233,5 @@ namespace Rapid_Prototyping_T7.Game.Objects
             velocity = Vector2.Zero;
         }
 
-        //Position is the Center bottom of the sprite. So it should relocalize for the left-top corner.
-        /*private Vector2 RelocalizePosition(Vector2 pos)
-        {
-            var posX = pos.X - (Rectangle.Width * 0.25f) / 2;
-            var posY = pos.Y - Rectangle.Height * 0.25f;
-            return new Vector2(posX, posY);
-        }*/
     }
 }

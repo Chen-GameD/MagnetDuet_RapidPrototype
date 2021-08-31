@@ -21,23 +21,16 @@ namespace Rapid_Prototyping_T7.Game.Objects
 
         private Vector2 previous_position;
 
-        public Rectangle Rectangle
-        {
-            get
-            {
-                return new Rectangle((int)Position.X, (int)Position.Y, (int)(sprite.Width * player.scale), (int)(sprite.Height * player.scale));
-            }
-        }
-        private Rectangle localBounds;
-
         public Rectangle BoundingRectangle
         {
             get
             {
-                int left = (int)Math.Round(Position.X - (sprite.Width * player.scale / 2)) + localBounds.X;
-                int top = (int)Math.Round(Position.Y - sprite.Height * player.scale) + localBounds.Y;
+                int width = (int)(sprite.Width * player.scale);
+                int height = (int)(sprite.Height * player.scale);
+                int left = (int)Math.Round(Position.X - (width / 2));
+                int top = (int)Math.Round(Position.Y - (height / 2));
 
-                return new Rectangle(left, top, localBounds.Width, localBounds.Height);
+                return new Rectangle(left, top, width, height);
             }
         }
 
@@ -81,11 +74,6 @@ namespace Rapid_Prototyping_T7.Game.Objects
         public override void LoadContent()
         {
             sprite = player.Level.Content.Load<Texture2D>("Sprites/Player/Silhouette-Stick-Figure");
-            int width = (int)(sprite.Width * player.scale);
-            int left = ((int)(sprite.Width * player.scale) - width) / 2;
-            int height = (int)(sprite.Height * player.scale);
-            int top = (int)(sprite.Height * player.scale) - height;
-            localBounds = new Rectangle(left, top, width, height);
         }
 
         public override void Update(GameTime gameTime)
