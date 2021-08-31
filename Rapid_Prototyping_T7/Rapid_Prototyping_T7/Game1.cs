@@ -101,7 +101,7 @@ namespace Rapid_Prototyping_T7
             //player.Draw(gameTime, _spriteBatch);
             //shadow.Draw(gameTime, _spriteBatch);
 
-            DrawCollisionLine(_graphics, level.Player.Rectangle, _spriteBatch, new Vector2(level.Player.Sprite.Width / 2, level.Player.Sprite.Height));
+            DrawCollisionLine(_graphics, level.Player.BoundingRectangle, _spriteBatch, new Vector2(level.Player.Sprite.Width / 2, level.Player.Sprite.Height));
 
             _spriteBatch.End();
         }
