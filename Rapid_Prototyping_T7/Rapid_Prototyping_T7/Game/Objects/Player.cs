@@ -23,10 +23,23 @@ namespace Rapid_Prototyping_T7.Game.Objects
         }
         Level level;
 
-        private float acceleration = 2500;
-        private float speed_decay = 0.95f;
-        private float max_speed =  250f;
-        private float min_speed = 35f;
+        private Shadow shadow;
+        public void SetShadow(Shadow in_shadow)
+        {
+            shadow = in_shadow;
+        }
+
+        private float acceleration_horizontal = 2500f;
+        private float speed_decay_horizontal = 0.95f;
+        private float max_speed_horizontal =  250f;
+        private float min_speed_horizontal = 35f;
+
+        private float max_speed_vertical_up = 2000f;
+        private float max_speed_vertical_down = 3000f;
+        private float max_repulsion = 2500f;
+        private float repulse_force = 10000000f;
+        private float attract_force = 1f;
+        private float acceleration_gravity = 10f;
 
         public bool IsOnGround
         {
@@ -102,25 +115,46 @@ namespace Rapid_Prototyping_T7.Game.Objects
         {
             var kstate = Keyboard.GetState();
 
-            if (kstate.IsKeyDown(Keys.Left))
+            // Get player input
+            if (kstate.IsKeyDown(Keys.Left) || kstate.IsKeyDown(Keys.A))
             {
-                velocity.X -= acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                velocity.X = MathF.Max(velocity.X, -max_speed);
+                velocity.X -= acceleration_horizontal * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                velocity.X = MathF.Max(velocity.X, -max_speed_horizontal);
             }
-            else if (kstate.IsKeyDown(Keys.Right))
+            else if (kstate.IsKeyDown(Keys.Right) || kstate.IsKeyDown(Keys.D))
             {
-                velocity.X += acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                velocity.X = MathF.Min(velocity.X, max_speed);
+                velocity.X += acceleration_horizontal * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                velocity.X = MathF.Min(velocity.X, max_speed_horizontal);
             }
             else 
             { 
-                velocity.X *= speed_decay;
-                if (MathF.Abs(velocity.X) < min_speed)
+                velocity.X *= speed_decay_horizontal;
+                if (MathF.Abs(velocity.X) < min_speed_horizontal)
                 { 
                     velocity.X = 0.0f; 
                 } 
             }
+            var distance_to_shadow = Vector2.Distance(position, shadow.Position);
+            if (kstate.IsKeyDown(Keys.Space))
+            {  
+                var repulsion = -1 * repulse_force / MathF.Pow(distance_to_shadow, 3) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                velocity.Y += MathF.Max(repulsion, -max_repulsion);
+            }
+            else
+            {
+                velocity.Y += attract_force / MathF.Pow(distance_to_shadow, 3) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+            velocity.Y += acceleration_gravity;
+            if(velocity.Y > 0)
+            {
+                velocity.Y = MathF.Min(velocity.Y, max_speed_vertical_down);
+            }
+            else
+            {
+                velocity.Y = MathF.Max(velocity.Y, -max_speed_vertical_up);
+            }
 
+            // Move
             position += velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             HandleCollisions();

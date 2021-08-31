@@ -165,6 +165,7 @@ namespace Rapid_Prototyping_T7.Game
             start = RectangleExtensions.GetBottomCenter(GetBounds(x, y));
             player = new Player(this, start);
             shadow = new Shadow(player);
+            player.SetShadow(shadow);
 
             return new Tile(null, TileCollision.Passable);
         }
