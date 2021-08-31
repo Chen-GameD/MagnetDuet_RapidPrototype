@@ -95,12 +95,12 @@ namespace Rapid_Prototyping_T7.Game.Objects
             var distance_to_player = Vector2.Distance(position, player.Position);
             if (kstate.IsKeyDown(Keys.Space))
             {
-                var repulsion = -1 * player.repulse_force / MathF.Pow(distance_to_player, 1.5f) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                var repulsion = -1 * player.repulse_force / MathF.Pow(distance_to_player, player.distance_decay_exponant) * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 velocity.Y -= MathF.Max(repulsion, -player.max_repulsion);
             }
             else
             {
-                velocity.Y -= player.attract_force / MathF.Pow(distance_to_player, 1.5f) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                velocity.Y -= player.attract_force / MathF.Pow(distance_to_player, player.distance_decay_exponant) * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
             velocity.Y -= player.acceleration_gravity;
             if (velocity.Y > 0)

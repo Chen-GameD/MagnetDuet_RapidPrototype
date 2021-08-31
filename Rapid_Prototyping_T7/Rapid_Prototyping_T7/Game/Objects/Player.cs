@@ -40,9 +40,10 @@ namespace Rapid_Prototyping_T7.Game.Objects
         public float repulse_force = 2500000f;
         public float attract_force = 1f;
         public float acceleration_gravity = 10f;
+        public float distance_decay_exponant = 1.5f;
 
         private Vector2 previous_position;
-        public float scale = 0.1f;
+        public float scale = .05f;
 
         public bool IsOnGround
         {
@@ -53,7 +54,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
         public Rectangle Rectangle
         {
             get
-            {
+            {      
                 return new Rectangle((int)Position.X, (int)Position.Y, (int)(sprite.Width * scale), (int)(sprite.Height * scale));
             }
         }
@@ -141,12 +142,12 @@ namespace Rapid_Prototyping_T7.Game.Objects
             var distance_to_shadow = Vector2.Distance(position, shadow.Position);
             if (kstate.IsKeyDown(Keys.Space))
             {
-                var repulsion = -1 * repulse_force / MathF.Pow(distance_to_shadow, 1.5f) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                var repulsion = -1 * repulse_force / MathF.Pow(distance_to_shadow, distance_decay_exponant) * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 velocity.Y += MathF.Max(repulsion, -max_repulsion);
             }
             else
             {
-                velocity.Y += attract_force / MathF.Pow(distance_to_shadow, 1.5f) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                velocity.Y += attract_force / MathF.Pow(distance_to_shadow, distance_decay_exponant) * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
             velocity.Y += acceleration_gravity;
             if (velocity.Y > 0)
