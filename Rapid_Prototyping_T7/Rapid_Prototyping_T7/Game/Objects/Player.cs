@@ -47,6 +47,8 @@ namespace Rapid_Prototyping_T7.Game.Objects
         }
         bool isOnGround;
 
+        private float previousBottom;
+
         public Rectangle Rectangle
         {
             get
@@ -79,7 +81,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            var scale = 0.25f;
+            var scale = 1;
             var rotation = 0f;
             var origin = new Vector2(sprite.Width / 2, sprite.Height);
             var depth = 0;
@@ -103,7 +105,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
 
         public override void LoadContent()
         {
-            sprite = level.Content.Load<Texture2D>("Sprites/Player/Silhouette-Stick-Figure");
+            sprite = level.Content.Load<Texture2D>("Sprites/Player/Idle");
             int width = (int)(sprite.Width);
             int left = (sprite.Width - width) / 2;
             int height = (int)(sprite.Height);
@@ -114,6 +116,8 @@ namespace Rapid_Prototyping_T7.Game.Objects
         public override void Update(GameTime gameTime)
         {
             var kstate = Keyboard.GetState();
+
+            Vector2 previousPosition = Position;
 
             // Get player input
             if (kstate.IsKeyDown(Keys.Left) || kstate.IsKeyDown(Keys.A))
@@ -140,16 +144,17 @@ namespace Rapid_Prototyping_T7.Game.Objects
                 var repulsion = -1 * repulse_force / MathF.Pow(distance_to_shadow, 3) * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 velocity.Y += MathF.Max(repulsion, -max_repulsion);
             }
-            else
+            else if (!isOnGround)
             {
                 velocity.Y += attract_force / MathF.Pow(distance_to_shadow, 3) * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
-            velocity.Y += acceleration_gravity;
+            if (!isOnGround)
+                velocity.Y += acceleration_gravity;
             if(velocity.Y > 0)
             {
                 velocity.Y = MathF.Min(velocity.Y, max_speed_vertical_down);
             }
-            else
+            else if (!isOnGround)
             {
                 velocity.Y = MathF.Max(velocity.Y, -max_speed_vertical_up);
             }
@@ -159,6 +164,11 @@ namespace Rapid_Prototyping_T7.Game.Objects
 
             HandleCollisions();
 
+            if (Position.X == previousPosition.X)
+                velocity.X = 0;
+
+            if (Position.Y == previousPosition.Y)
+                velocity.Y = 0;
         }
 
         private void HandleCollisions()
@@ -190,7 +200,29 @@ namespace Rapid_Prototyping_T7.Game.Objects
                             float absDepthX = Math.Abs(depth.X);
                             float absDepthY = Math.Abs(depth.Y);
 
-                            if (collision == TileCollision.Impassable)
+                            // Resolve the collision along the shallow axis.
+                            if (absDepthY < absDepthX)
+                            {
+                                // If we crossed the top of a tile, we are on the ground.
+                                if (previousBottom <= tileBounds.Top)
+                                    isOnGround = true;
+                                if (previousBottom > tileBounds.Top)
+                                {
+                                    var a = 1;
+                                }
+                                    
+
+                                // Ignore platforms, unless we are on the ground.
+                                if (collision == TileCollision.Impassable || IsOnGround)
+                                {
+                                    // Resolve the collision along the Y axis.
+                                    Position = new Vector2(Position.X, Position.Y + depth.Y);
+
+                                    // Perform further collisions with the new bounds.
+                                    bounds = BoundingRectangle;
+                                }
+                            }
+                            else if (collision == TileCollision.Impassable) // Ignore platforms.
                             {
                                 // Resolve the collision along the X axis.
                                 Position = new Vector2(Position.X + depth.X, Position.Y);
@@ -202,6 +234,9 @@ namespace Rapid_Prototyping_T7.Game.Objects
                     }
                 }
             }
+
+            // Save the new bounds bottom.
+            previousBottom = bounds.Bottom;
         }
 
         public void Reset(Vector2 position)
