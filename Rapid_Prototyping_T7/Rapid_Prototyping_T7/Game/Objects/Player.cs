@@ -41,6 +41,9 @@ namespace Rapid_Prototyping_T7.Game.Objects
         public float attract_force = 1f;
         public float acceleration_gravity = 10f;
 
+        public float battery_duration = 1f;
+        public float super_jump_force_multiplyer = 2f;
+
         private Vector2 previous_position;
         public float scale = 0.1f;
 
@@ -142,6 +145,13 @@ namespace Rapid_Prototyping_T7.Game.Objects
             if (kstate.IsKeyDown(Keys.Space))
             {
                 var repulsion = -1 * repulse_force / MathF.Pow(distance_to_shadow, 1.5f) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (battery_duration > 0)
+                {
+                    repulsion *= super_jump_force_multiplyer;
+                    battery_duration -= 1 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if (battery_duration < 0f)
+                        battery_duration = 0f;
+                }
                 velocity.Y += MathF.Max(repulsion, -max_repulsion);
             }
             else
