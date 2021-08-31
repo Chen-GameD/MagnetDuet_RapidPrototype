@@ -10,7 +10,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
 {
     class Player : GameObject
     {
-        private Vector2 velocity;
+        public Vector2 velocity;
         public Vector2 Velocity
         {
             get { return velocity; }
@@ -34,15 +34,15 @@ namespace Rapid_Prototyping_T7.Game.Objects
         private float max_speed_horizontal = 250f;
         private float min_speed_horizontal = 35f;
 
-        private float max_speed_vertical_up = 2000f;
-        private float max_speed_vertical_down = 3000f;
-        private float max_repulsion = 2500f;
-        private float repulse_force = 2500000f;
-        private float attract_force = 1f;
-        private float acceleration_gravity = 10f;
+        public float max_speed_vertical_up = 2000f;
+        public float max_speed_vertical_down = 3000f;
+        public float max_repulsion = 2500f;
+        public float repulse_force = 2500000f;
+        public float attract_force = 1f;
+        public float acceleration_gravity = 10f;
 
         private Vector2 previous_position;
-        private float scale = 0.25f;
+        public float scale = 0.1f;
 
         public bool IsOnGround
         {

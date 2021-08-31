@@ -16,7 +16,7 @@ namespace Rapid_Prototyping_T7.Game
             set { sprite = value; }
         }
 
-        protected Vector2 position;
+        public Vector2 position;
         public Vector2 Position
         {
             get { return position; }
