@@ -5,6 +5,7 @@ using Rapid_Prototyping_T7.Game;
 using Rapid_Prototyping_T7.Game.Objects;
 using System.IO;
 using Microsoft.Xna.Framework.Content;
+using Rapid_Prototyping_T7.Constants;
 
 namespace Rapid_Prototyping_T7
 {
@@ -14,8 +15,6 @@ namespace Rapid_Prototyping_T7
         private SpriteBatch _spriteBatch;
         private Camera _camera;
         Vector2 baseScreenSize = new Vector2(800, 480);
-        public static int ScreenWidth = 1600;
-        public static int ScreenHeight = 800;
 
         // Meta-level game state.
         private int levelIndex = -1;
@@ -37,8 +36,8 @@ namespace Rapid_Prototyping_T7
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            _graphics.PreferredBackBufferWidth = ScreenWidth;
-            _graphics.PreferredBackBufferHeight = ScreenHeight;
+            _graphics.PreferredBackBufferWidth = Constants.Constants.ScreenWidth;
+            _graphics.PreferredBackBufferHeight = Constants.Constants.ScreenHeight;
             var vp = new Viewport();
             vp.X = vp.Y = 800;
             vp.Width = 800;
