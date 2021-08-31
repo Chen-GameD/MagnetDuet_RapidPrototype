@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Rapid_Prototyping_T7.Game.Objects;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,6 +16,8 @@ namespace Rapid_Prototyping_T7.Game
 
         private const int EntityLayer = 2;
 
+        private List<Prop> props = new List<Prop>();
+
         // Level game state.
         private Random random = new Random(354668); // Arbitrary, but constant seed
 
@@ -23,6 +26,25 @@ namespace Rapid_Prototyping_T7.Game
             get { return content; }
         }
         ContentManager content;
+
+        public Player Player
+        {
+            get { return player; }
+        }
+        Player player;
+        private Vector2 start; //start point
+
+        public Shadow Shadow
+        {
+            get { return shadow; }
+        }
+        Shadow shadow;
+
+        public int Score
+        {
+            get { return score; }
+        }
+        int score;
 
         public Level(IServiceProvider serviceProvider, Stream fileStream, int levelIndex)
         {
@@ -36,7 +58,6 @@ namespace Rapid_Prototyping_T7.Game
                 int segmentIndex = levelIndex;
                 layers[i] = Content.Load<Texture2D>("Backgrounds/Layer" + i + "_" + segmentIndex);
             }
-
         }
 
         private void LoadTiles(Stream fileStream)
@@ -70,6 +91,9 @@ namespace Rapid_Prototyping_T7.Game
                     tiles[x, y] = LoadTile(tileType, x, y);
                 }
             }
+
+            if (Player == null)
+                throw new NotSupportedException("A level must have a starting point.");
         }
 
         private Tile LoadTile(char tileType, int x, int y)
@@ -80,13 +104,33 @@ namespace Rapid_Prototyping_T7.Game
                 case '.':
                     return new Tile(null, TileCollision.Passable);
 
-                // Impassable block
+                // Platform brick
                 case '#':
                     return LoadVarietyTile("BlockA", 7, TileCollision.Impassable);
 
-                // Passable block
-                case ':':
+                // Battery Prop
+                case '@':
+                    return LoadPropTile(x, y, PropType.Battery);
+
+                // Star Prop
+                case '*':
+                    return LoadPropTile(x, y, PropType.Star);
+
+                // Electric field
+                case '%':
                     return LoadVarietyTile("BlockB", 2, TileCollision.Passable);
+
+                //Blue moving platform
+                case '$':
+                    return LoadVarietyTile("BlockB", 2, TileCollision.Passable);
+
+                // Final Platform
+                case '&':
+                    return LoadVarietyTile("BlockB", 2, TileCollision.Passable);
+
+                // Player 1 start point
+                case '1':
+                    return LoadStartTile(x, y);
 
                 // Unknown tile type character
                 default:
@@ -96,13 +140,34 @@ namespace Rapid_Prototyping_T7.Game
 
         private Tile LoadTile(string tileName, TileCollision collision)
         {
-            return new Tile(Content.Load<Texture2D>("Tiles/" + tileName), collision);
+            return new Tile(Content.Load<Texture2D>("Sprites/Tiles/" + tileName), collision);
         }
 
         private Tile LoadVarietyTile(string tileName, int variationCount, TileCollision collision)
         {
             int index = random.Next(variationCount);
             return LoadTile(tileName + index, collision);
+        }
+
+        private Tile LoadPropTile(int x, int y, PropType type)
+        {
+            Point position = GetBounds(x, y).Center;
+            props.Add(new Prop(this, new Vector2(position.X, position.Y), type));
+
+            return new Tile(null, TileCollision.Passable);
+        }
+
+        private Tile LoadStartTile(int x, int y)
+        {
+            if (Player != null)
+                throw new NotSupportedException("A level may only have one starting point.");
+
+            start = RectangleExtensions.GetBottomCenter(GetBounds(x, y));
+            player = new Player(this, start);
+            shadow = new Shadow(player);
+            player.SetShadow(shadow);
+
+            return new Tile(null, TileCollision.Passable);
         }
 
         public void Dispose()
@@ -144,12 +209,44 @@ namespace Rapid_Prototyping_T7.Game
         }
 
 
-        public void Update()
+        public void Update(GameTime gameTime)
         {
-
+            UpdateProp(gameTime);
+            player.Update(gameTime);
+            shadow.Update(gameTime);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        private void UpdateProp(GameTime gameTime)
+        {
+            for (int i = 0; i < props.Count; i++)
+            {
+                Prop prop = props[i];
+
+                prop.Update(gameTime);
+
+                //if (prop.BoundingCircle.Intersects(Player.BoundingRectanle))
+                //{
+                    //props.RemoveAt(i--);
+                   // OnPropCollected(prop, Player);
+               // }
+            }
+        }
+
+        private void OnPropCollected(Prop prop, Player collectedBy)
+        {
+            switch(prop.Type)
+            {
+                case PropType.Battery:
+                    //To do(Get some ability)
+
+                    break;
+                case PropType.Star:
+                    score += prop.PointValue;
+                    break;
+            }
+        }
+
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             for (int i = 0; i <= EntityLayer; i++)
             {
@@ -158,11 +255,19 @@ namespace Rapid_Prototyping_T7.Game
 
             DrawTiles(spriteBatch);
 
+            foreach (Prop prop in props)
+            {
+                prop.Draw(gameTime, spriteBatch);
+            }
+
             for (int i = EntityLayer + 1; i < layers.Length; ++i)
             {
                 spriteBatch.Draw(layers[i], Vector2.Zero, Color.White);
             }
-                
+
+            player.Draw(gameTime, spriteBatch);
+            shadow.Draw(gameTime, spriteBatch);
+
         }
 
         private void DrawTiles(SpriteBatch spriteBatch)

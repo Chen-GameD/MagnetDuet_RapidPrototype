@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SourceFileCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Profile>Reach</Profile>
+  <Platform>DesktopGL</Platform>
+  <Config />
+  <SourceFiles>
+    <File>G:/Rapid_Prototyping/Test_1/Rapid_Prototyping_T7/Rapid_Prototyping_T7/Content/Backgrounds/Layer0_0.png</File>
+    <File>G:/Rapid_Prototyping/Test_1/Rapid_Prototyping_T7/Rapid_Prototyping_T7/Content/Backgrounds/Layer0_1.png</File>
+    <File>G:/Rapid_Prototyping/Test_1/Rapid_Prototyping_T7/Rapid_Prototyping_T7/Content/Backgrounds/Layer0_2.png</File>
+    <File>G:/Rapid_Prototyping/Test_1/Rapid_Prototyping_T7/Rapid_Prototyping_T7/Content/Backgrounds/Layer1_0.png</File>
+    <File>G:/Rapid_Prototyping/Test_1/Rapid_Prototyping_T7/Rapid_Prototyping_T7/Content/Backgrounds/Layer1_1.png</File>
+    <File>G:/Rapid_Prototyping/Test_1/Rapid_Prototyping_T7/Rapid_Prototyping_T7/Content/Backgrounds/Layer1_2.png</File>
+    <File>G:/Rapid_Prototyping/Test_1/Rapid_Prototyping_T7/Rapid_Prototyping_T7/Content/Backgrounds/Layer2_0.png</File>
+    <File>G:/Rapid_Prototyping/Test_1/Rapid_Prototyping_T7/Rapid_Prototyping_T7/Content/Backgrounds/Layer2_1.png</File>
+    <File>G:/Rapid_Prototyping/Test_1/Rapid_Prototyping_T7/Rapid_Prototyping_T7/Content/Backgrounds/Layer2_2.png</File>
+    <File>G:/Rapid_Prototyping/Test_1/Rapid_Prototyping_T7/Rapid_Prototyping_T7/Content/Sprites/Battery.png</File>
+    <File>G:/Rapid_Prototyping/Test_1/Rapid_Prototyping_T7/Rapid_Prototyping_T7/Content/Sprites/Star.png</File>
+    <File>G:/Rapid_Prototyping/Test_1/Rapid_Prototyping_T7/Rapid_Prototyping_T7/Content/Sprites/Player/Silhouette-Stick-Figure.png</File>
+    <File>G:/Rapid_Prototyping/Test_1/Rapid_Prototyping_T7/Rapid_Prototyping_T7/Content/Sprites/Tiles/BlockA0.png</File>
+    <File>G:/Rapid_Prototyping/Test_1/Rapid_Prototyping_T7/Rapid_Prototyping_T7/Content/Sprites/Tiles/BlockA1.png</File>
+    <File>G:/Rapid_Prototyping/Test_1/Rapid_Prototyping_T7/Rapid_Prototyping_T7/Content/Sprites/Tiles/BlockA2.png</File>
+    <File>G:/Rapid_Prototyping/Test_1/Rapid_Prototyping_T7/Rapid_Prototyping_T7/Content/Sprites/Tiles/BlockA3.png</File>
+    <File>G:/Rapid_Prototyping/Test_1/Rapid_Prototyping_T7/Rapid_Prototyping_T7/Content/Sprites/Tiles/BlockA4.png</File>
+    <File>G:/Rapid_Prototyping/Test_1/Rapid_Prototyping_T7/Rapid_Prototyping_T7/Content/Sprites/Tiles/BlockA5.png</File>
+    <File>G:/Rapid_Prototyping/Test_1/Rapid_Prototyping_T7/Rapid_Prototyping_T7/Content/Sprites/Tiles/BlockA6.png</File>
+    <File>G:/Rapid_Prototyping/Test_1/Rapid_Prototyping_T7/Rapid_Prototyping_T7/Content/Sprites/Tiles/BlockB0.png</File>
+    <File>G:/Rapid_Prototyping/Test_1/Rapid_Prototyping_T7/Rapid_Prototyping_T7/Content/Sprites/Tiles/BlockB1.png</File>
+    <File>G:/Rapid_Prototyping/Test_1/Rapid_Prototyping_T7/Rapid_Prototyping_T7/Content/Sprites/Tiles/Exit.png</File>
+    <File>G:/Rapid_Prototyping/Test_1/Rapid_Prototyping_T7/Rapid_Prototyping_T7/Content/Sprites/Tiles/Platform.png</File>
+  </SourceFiles>
+  <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+  </DestFiles>
+</SourceFileCollection>
