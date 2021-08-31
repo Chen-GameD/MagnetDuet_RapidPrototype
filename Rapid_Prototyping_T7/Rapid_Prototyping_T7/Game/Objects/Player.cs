@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
@@ -42,6 +42,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
         private float acceleration_gravity = 10f;
 
         private Vector2 previous_position;
+        private float scale = 0.25f;
 
         public bool IsOnGround
         {
@@ -53,7 +54,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
         {
             get
             {
-                return new Rectangle((int)Position.X, (int)Position.Y, sprite.Width, sprite.Height);
+                return new Rectangle((int)Position.X, (int)Position.Y, (int)(sprite.Width * scale), (int)(sprite.Height * scale));
             }
         }
         private Rectangle localBounds;
@@ -62,8 +63,8 @@ namespace Rapid_Prototyping_T7.Game.Objects
         {
             get
             {
-                int left = (int)Math.Round(Position.X - (sprite.Width / 2)) + localBounds.X;
-                int top = (int)Math.Round(Position.Y - sprite.Height) + localBounds.Y;
+                int left = (int)Math.Round(Position.X - (sprite.Width * scale / 2)) + localBounds.X;
+                int top = (int)Math.Round(Position.Y - sprite.Height * scale) + localBounds.Y;
 
                 return new Rectangle(left, top, localBounds.Width, localBounds.Height);
             }
@@ -81,7 +82,6 @@ namespace Rapid_Prototyping_T7.Game.Objects
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            var scale = 0.25f;
             var rotation = 0f;
             var origin = new Vector2(sprite.Width / 2, sprite.Height);
             var depth = 0;
@@ -106,10 +106,10 @@ namespace Rapid_Prototyping_T7.Game.Objects
         public override void LoadContent()
         {
             sprite = level.Content.Load<Texture2D>("Sprites/Player/Silhouette-Stick-Figure");
-            int width = (int)(sprite.Width);
-            int left = (sprite.Width - width) / 2;
-            int height = (int)(sprite.Height);
-            int top = sprite.Height - height;
+            int width = (int)(sprite.Width * scale);
+            int left = ((int)(sprite.Width * scale) - width) / 2;
+            int height = (int)(sprite.Height * scale);
+            int top = (int)(sprite.Height * scale) - height;
             localBounds = new Rectangle(left, top, width, height);
         }
 
