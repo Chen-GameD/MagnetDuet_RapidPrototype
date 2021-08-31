@@ -6,14 +6,16 @@ using Rapid_Prototyping_T7.Game.Objects;
 using System.IO;
 using Microsoft.Xna.Framework.Content;
 
-
 namespace Rapid_Prototyping_T7
 {
     public class Game1 : Microsoft.Xna.Framework.Game
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        private Camera _camera;
         Vector2 baseScreenSize = new Vector2(800, 480);
+        public static int ScreenWidth = 1600;
+        public static int ScreenHeight = 800;
 
         // Meta-level game state.
         private int levelIndex = -1;
@@ -21,27 +23,30 @@ namespace Rapid_Prototyping_T7
 
         private const int numberOfLevels = 3;
 
-        private Player player;
-        private Shadow shadow;
-
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             _graphics.IsFullScreen = false;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            Window.AllowUserResizing = true;
+        }
 
-            player = new Player();
-            shadow = new Shadow(player);
-    }
+            
 
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            _graphics.PreferredBackBufferWidth = ScreenWidth;
+            _graphics.PreferredBackBufferHeight = ScreenHeight;
+            var vp = new Viewport();
+            vp.X = vp.Y = 800;
+            vp.Width = 800;
+            vp.Height = 800;
+            _graphics.GraphicsDevice.Viewport = vp;
+            _graphics.ApplyChanges();
+            _camera = new Camera();
             base.Initialize();
-            player.Initialize();
-            shadow.Initialize();
         }
 
         protected override void LoadContent()
@@ -50,10 +55,9 @@ namespace Rapid_Prototyping_T7
             ContentManager content = new ContentManager(Services, "Content");
 
             // TODO: use this.Content to load your game content here
-
             LoadNextLevel();
-            player.LoadContent(content);
-            shadow.LoadContent(content);
+            //player.LoadContent(content);
+            //shadow.LoadContent(content);
         }
 
         protected override void Update(GameTime gameTime)
@@ -61,10 +65,12 @@ namespace Rapid_Prototyping_T7
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            
+            // TODO: Add your update logic here
+            level.Update(gameTime);
+            _camera.Follow(level.Player);
             base.Update(gameTime);
-            player.Update(gameTime);
-            shadow.Update(gameTime);
+            //player.Update(gameTime);
+            //shadow.Update(gameTime);
         }
 
         private void LoadNextLevel()
@@ -86,14 +92,53 @@ namespace Rapid_Prototyping_T7
         {
             _graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            _spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null);
+            _spriteBatch.Begin(transformMatrix: _camera.Transform);
+            //_spriteBatch.Begin();
 
             base.Draw(gameTime);
-            level.Draw(_spriteBatch);
-            player.Draw(gameTime, _spriteBatch);
-            shadow.Draw(gameTime, _spriteBatch);
+            level.Draw(gameTime, _spriteBatch);
+            //_spriteBatch.Draw(createCircleText(50), level.Player.Position, Color.White);
+            //player.Draw(gameTime, _spriteBatch);
+            //shadow.Draw(gameTime, _spriteBatch);
+
+            DrawCollisionLine(_graphics, level.Player.Rectangle, _spriteBatch, new Vector2(level.Player.Sprite.Width / 2, level.Player.Sprite.Height));
 
             _spriteBatch.End();
+        }
+        public void DrawCollisionLine(GraphicsDeviceManager mag, Rectangle rec, SpriteBatch spr, Vector2 origin)
+        {
+            DrawCollision col = new DrawCollision(mag, rec);
+            col.Update(rec, origin);
+            col.Draw(spr);
+        }
+
+        Texture2D createCircleText(int radius)
+        {
+            Texture2D texture = new Texture2D(GraphicsDevice, radius, radius);
+            Color[] colorData = new Color[radius * radius];
+
+            float diam = radius / 2f;
+            float diamsq = diam * diam;
+
+            for (int x = 0; x < radius; x++)
+            {
+                for (int y = 0; y < radius; y++)
+                {
+                    int index = x * radius + y;
+                    Vector2 pos = new Vector2(x - diam, y - diam);
+                    if (pos.LengthSquared() <= diamsq)
+                    {
+                        colorData[index] = Color.White;
+                    }
+                    else
+                    {
+                        colorData[index] = Color.Transparent;
+                    }
+                }
+            }
+
+            texture.SetData(colorData);
+            return texture;
         }
     }
 }

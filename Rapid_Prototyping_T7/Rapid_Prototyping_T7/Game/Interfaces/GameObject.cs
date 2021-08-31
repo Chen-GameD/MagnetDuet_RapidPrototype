@@ -25,7 +25,7 @@ namespace Rapid_Prototyping_T7.Game
 
         public abstract void Initialize();
 
-        public abstract void LoadContent(ContentManager content);
+        public abstract void LoadContent();
 
         public abstract void Update(GameTime gameTime);
 
