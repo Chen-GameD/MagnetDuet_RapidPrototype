@@ -40,12 +40,13 @@ namespace Rapid_Prototyping_T7.Game.Objects
         public float repulse_force = 2500000f;
         public float attract_force = 1f;
         public float acceleration_gravity = 10f;
+        public float distance_decay_exponant = 1.5f;
 
         public float battery_duration = 1f;
         public float super_jump_force_multiplyer = 2f;
 
         private Vector2 previous_position;
-        public float scale = 0.1f;
+        public float scale = .05f;
 
         public bool IsOnGround
         {
@@ -130,7 +131,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
             var distance_to_shadow = Vector2.Distance(position, shadow.Position);
             if (kstate.IsKeyDown(Keys.Space))
             {
-                var repulsion = -1 * repulse_force / MathF.Pow(distance_to_shadow, 1.5f) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                var repulsion = -1 * repulse_force / MathF.Pow(distance_to_shadow, distance_decay_exponant) * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 if (battery_duration > 0)
                 {
                     repulsion *= super_jump_force_multiplyer;
@@ -142,7 +143,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
             }
             else
             {
-                velocity.Y += attract_force / MathF.Pow(distance_to_shadow, 1.5f) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                velocity.Y += attract_force / MathF.Pow(distance_to_shadow, distance_decay_exponant) * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
             velocity.Y += acceleration_gravity;
             if (velocity.Y > 0)
