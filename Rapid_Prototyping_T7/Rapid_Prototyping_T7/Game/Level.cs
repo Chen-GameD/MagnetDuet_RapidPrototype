@@ -32,13 +32,14 @@ namespace Rapid_Prototyping_T7.Game
             get { return player; }
         }
         Player player;
-        private Vector2 start; //start point
+        private Vector2 player_start; //player_start point
 
         public Shadow Shadow
         {
             get { return shadow; }
         }
         Shadow shadow;
+        private Vector2 shadow_start;
 
         public int Score
         {
@@ -49,6 +50,13 @@ namespace Rapid_Prototyping_T7.Game
         public Level(IServiceProvider serviceProvider, Stream fileStream, int levelIndex)
         {
             content = new ContentManager(serviceProvider, "Content");
+
+            player = new Player(this, new Vector2(0, 0));
+            shadow = new Shadow(this, new Vector2(0, 0), player);
+            player.SetShadow(shadow);
+            player_start = Vector2.Zero;
+            shadow_start = Vector2.Zero;
+
 
             LoadTiles(fileStream);
 
@@ -128,9 +136,12 @@ namespace Rapid_Prototyping_T7.Game
                 case '&':
                     return LoadVarietyTile("BlockB", 2, TileCollision.Passable);
 
-                // Player 1 start point
+                // Player 1 player_start point
                 case '1':
-                    return LoadStartTile(x, y);
+                    return LoadStartTile(x, y, 1);
+
+                case '2':
+                    return LoadStartTile(x, y, 2);
 
                 // Unknown tile type character
                 default:
@@ -157,16 +168,23 @@ namespace Rapid_Prototyping_T7.Game
             return new Tile(null, TileCollision.Passable);
         }
 
-        private Tile LoadStartTile(int x, int y)
+        private Tile LoadStartTile(int x, int y, int player_number)
         {
-            if (Player != null)
-                throw new NotSupportedException("A level may only have one starting point.");
+            if (player_number == 1)
+            {
+                if (player_start != Vector2.Zero)
+                    throw new NotSupportedException("A level may only have one starting point.");
 
-            start = RectangleExtensions.GetBottomCenter(GetBounds(x, y));
-            player = new Player(this, start);
-            shadow = new Shadow(player);
-            player.SetShadow(shadow);
-
+                player_start = RectangleExtensions.GetBottomCenter(GetBounds(x, y));
+                player.position = player_start;
+            }
+            else
+            {
+                if (shadow_start != Vector2.Zero)
+                    throw new NotSupportedException("A level may only have one starting point for the shadow.");
+                shadow_start = RectangleExtensions.GetBottomCenter(GetBounds(x, y));
+                shadow.position = shadow_start;
+            }
             return new Tile(null, TileCollision.Passable);
         }
 
@@ -226,15 +244,15 @@ namespace Rapid_Prototyping_T7.Game
 
                 //if (prop.BoundingCircle.Intersects(Player.BoundingRectanle))
                 //{
-                    //props.RemoveAt(i--);
-                   // OnPropCollected(prop, Player);
-               // }
+                //props.RemoveAt(i--);
+                // OnPropCollected(prop, Player);
+                // }
             }
         }
 
         private void OnPropCollected(Prop prop, Player collectedBy)
         {
-            switch(prop.Type)
+            switch (prop.Type)
             {
                 case PropType.Battery:
                     //To do(Get some ability)
