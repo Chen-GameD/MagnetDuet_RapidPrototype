@@ -23,6 +23,12 @@ namespace Rapid_Prototyping_T7.Game.Objects
         }
         Level level;
 
+        public bool IsAlive
+        {
+            get { return isAlive; }
+        }
+        bool isAlive;
+
         private Shadow shadow;
         public void SetShadow(Shadow in_shadow)
         {
@@ -43,6 +49,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
         public float distance_decay_exponant = 1.5f;
 
         public float battery_duration = 1f;
+        public float battery_getCollected = 1f;
         public float super_jump_force_multiplyer = 2f;
 
         private Vector2 previous_position;
@@ -159,6 +166,11 @@ namespace Rapid_Prototyping_T7.Game.Objects
             position += velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             HandleCollisions();
+
+            if (this.BoundingRectangle.Intersects(shadow.BoundingRectangle))
+            {
+                OnKilled();
+            }
         }
 
         private void HandleCollisions()
@@ -226,11 +238,17 @@ namespace Rapid_Prototyping_T7.Game.Objects
             }
         }
 
+        public void OnKilled()
+        {
+            isAlive = false;
+        }
+
         public void Reset(Vector2 in_position)
         {
             position = in_position;
             previous_position = in_position;
             velocity = Vector2.Zero;
+            isAlive = true;
         }
 
     }

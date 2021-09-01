@@ -170,5 +170,12 @@ namespace Rapid_Prototyping_T7.Game.Objects
                 }
             }
         }
+
+        public void Reset(Vector2 in_position)
+        {
+            position = in_position;
+            previous_position = in_position;
+            velocity = Vector2.Zero;
+        }
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Rapid_Prototyping_T7.Game.Objects;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -242,11 +243,11 @@ namespace Rapid_Prototyping_T7.Game
 
                 prop.Update(gameTime);
 
-                //if (prop.BoundingCircle.Intersects(Player.BoundingRectanle))
-                //{
-                //props.RemoveAt(i--);
-                // OnPropCollected(prop, Player);
-                // }
+                if (prop.BoundingCircle.Intersects(Player.BoundingRectangle) || prop.BoundingCircle.Intersects(Shadow.BoundingRectangle))
+                {
+                    props.RemoveAt(i--);
+                    OnPropCollected(prop, Player);
+                }
             }
         }
 
@@ -256,7 +257,7 @@ namespace Rapid_Prototyping_T7.Game
             {
                 case PropType.Battery:
                     //To do(Get some ability)
-
+                    collectedBy.battery_duration = collectedBy.battery_getCollected;
                     break;
                 case PropType.Star:
                     score += prop.PointValue;
@@ -286,6 +287,8 @@ namespace Rapid_Prototyping_T7.Game
             player.Draw(gameTime, spriteBatch);
             shadow.Draw(gameTime, spriteBatch);
 
+            Trace.WriteLine(Score);
+
         }
 
         private void DrawTiles(SpriteBatch spriteBatch)
@@ -305,6 +308,12 @@ namespace Rapid_Prototyping_T7.Game
                     }
                 }
             }
+        }
+
+        public void StartNewLife()
+        {
+            Player.Reset(player_start);
+            shadow.Reset(shadow_start);
         }
     }
 }
