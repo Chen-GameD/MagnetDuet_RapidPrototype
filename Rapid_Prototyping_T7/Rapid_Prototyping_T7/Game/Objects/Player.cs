@@ -32,7 +32,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
         private Shadow shadow;
         public void SetShadow(Shadow in_shadow)
         {
-            shadow = in_shadow;
+            shadow = in_shadow; 
         }
 
         private float acceleration_horizontal = 2500f;
@@ -44,7 +44,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
         public float max_speed_vertical_down = 3000f;
         public float max_repulsion = 2500f;
         public float repulse_force = 2500000f;
-        public float attract_force = 1f;
+        public float attract_force = 250f;
         public float acceleration_gravity = 10f;
         public float distance_decay_exponant = 1.5f;
 
@@ -139,13 +139,13 @@ namespace Rapid_Prototyping_T7.Game.Objects
             if (kstate.IsKeyDown(Keys.Space))
             {
                 var repulsion = -1 * repulse_force / MathF.Pow(distance_to_shadow, distance_decay_exponant) * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if (battery_duration > 0)
-                {
-                    repulsion *= super_jump_force_multiplyer;
-                    battery_duration -= 1 * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                    if (battery_duration < 0f)
-                        battery_duration = 0f;
-                }
+                //if (battery_duration > 0)
+                //{
+                //    repulsion *= super_jump_force_multiplyer;
+                //    battery_duration -= 1 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                //    if (battery_duration < 0f)
+                //        battery_duration = 0f;
+                //}
                 velocity.Y += MathF.Max(repulsion, -max_repulsion);
             }
             else
