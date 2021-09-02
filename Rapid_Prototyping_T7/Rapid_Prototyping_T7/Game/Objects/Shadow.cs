@@ -73,7 +73,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
 
         public override void LoadContent()
         {
-            sprite = player.Level.Content.Load<Texture2D>("Sprites/Player/Silhouette-Stick-Figure");
+            sprite = player.Level.Content.Load<Texture2D>("Sprites/Player/JohnnyGreenHead");
         }
 
         public override void Update(GameTime gameTime)

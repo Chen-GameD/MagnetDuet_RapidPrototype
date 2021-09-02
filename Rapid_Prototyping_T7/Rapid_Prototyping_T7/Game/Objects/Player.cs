@@ -48,12 +48,12 @@ namespace Rapid_Prototyping_T7.Game.Objects
         public float acceleration_gravity = 10f;
         public float distance_decay_exponant = 1.4f;
 
-        public float battery_duration = 1f;
+        public float battery_duration = 0f;
         public float battery_getCollected = 1f;
         public float super_jump_force_multiplyer = 2f;
 
         private Vector2 previous_position;
-        public float scale = .04f;
+        public float scale = .08f;
 
         public bool IsOnGround
         {
@@ -107,7 +107,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
 
         public override void LoadContent()
         {
-            sprite = level.Content.Load<Texture2D>("Sprites/Player/Silhouette-Stick-Figure");
+            sprite = level.Content.Load<Texture2D>("Sprites/Player/JohnnyGreenHead");
         }
 
         public override void Update(GameTime gameTime)
