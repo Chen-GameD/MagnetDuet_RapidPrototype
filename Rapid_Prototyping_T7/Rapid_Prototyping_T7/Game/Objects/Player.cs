@@ -139,13 +139,13 @@ namespace Rapid_Prototyping_T7.Game.Objects
             if (kstate.IsKeyDown(Keys.Space))
             {
                 var repulsion = -1 * repulse_force / MathF.Pow(distance_to_shadow, distance_decay_exponant) * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                //if (battery_duration > 0)
-                //{
-                //    repulsion *= super_jump_force_multiplyer;
-                //    battery_duration -= 1 * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                //    if (battery_duration < 0f)
-                //        battery_duration = 0f;
-                //}
+                if (battery_duration > 0)
+                {
+                    repulsion *= super_jump_force_multiplyer;
+                    battery_duration -= 1 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if (battery_duration < 0f)
+                        battery_duration = 0f;
+                }
                 velocity.Y += MathF.Max(repulsion, -max_repulsion);
             }
             else
