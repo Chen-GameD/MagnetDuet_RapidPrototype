@@ -43,7 +43,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
         public float max_speed_vertical_up = 2000f;
         public float max_speed_vertical_down = 3000f;
         public float max_repulsion = 2500f;
-        public float repulse_force = 2500000f;
+        public float repulse_force = 700000f;
         public float attract_force = 250f;
         public float acceleration_gravity = 10f;
         public float distance_decay_exponant = 1.5f;
@@ -53,7 +53,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
         public float super_jump_force_multiplyer = 2f;
 
         private Vector2 previous_position;
-        public float scale = .05f;
+        public float scale = .04f;
 
         public bool IsOnGround
         {

@@ -92,6 +92,7 @@ namespace Rapid_Prototyping_T7
 
             bool resetPressed =
                 Keyboard.GetState().IsKeyDown(Keys.R);
+            resetPressed = resetPressed || (Keyboard.GetState().IsKeyDown(Keys.Space) && !level.Player.IsAlive);
 
             // Perform the appropriate action to advance the game and
             // to get the player back to playing.
