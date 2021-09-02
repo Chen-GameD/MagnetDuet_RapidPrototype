@@ -14,11 +14,17 @@ namespace Rapid_Prototyping_T7
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private Camera _camera;
-        Vector2 baseScreenSize = new Vector2(800, 480);
 
         // Meta-level game state.
         private int levelIndex = -1;
         private Level level;
+
+        private SpriteFont hudFont;
+        private Texture2D batteryHud;
+
+        //Game State
+        private Texture2D winOverlay;
+        private Texture2D diedOverlay;
 
         private const int numberOfLevels = 3;
 
@@ -53,23 +59,51 @@ namespace Rapid_Prototyping_T7
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             ContentManager content = new ContentManager(Services, "Content");
 
+            // Load Font
+            hudFont = Content.Load<SpriteFont>("Fonts/Hud");
+
+            //Load Overlay
+            winOverlay = Content.Load<Texture2D>("Overlays/you_win");
+            diedOverlay = Content.Load<Texture2D>("Overlays/you_died");
+
             // TODO: use this.Content to load your game content here
             LoadNextLevel();
-            //player.LoadContent(content);
-            //shadow.LoadContent(content);
         }
 
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+            HandleInput(gameTime);
 
             // TODO: Add your update logic here
             level.Update(gameTime);
-            _camera.Follow(level.Player);
+            _camera.Follow(level.Player, level.Shadow);
             base.Update(gameTime);
             //player.Update(gameTime);
             //shadow.Update(gameTime);
+        }
+
+        private void HandleInput(GameTime gameTime)
+        {
+            // Exit the game when back is pressed.
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+                Exit();
+
+            bool resetPressed =
+                Keyboard.GetState().IsKeyDown(Keys.R);
+
+            // Perform the appropriate action to advance the game and
+            // to get the player back to playing.
+            if (resetPressed)
+            {
+                level.StartNewLife();
+
+                //if (!level.Player.IsAlive)
+                //{
+                    //level.StartNewLife();
+                //}
+            }
         }
 
         private void LoadNextLevel()
@@ -95,7 +129,9 @@ namespace Rapid_Prototyping_T7
             //_spriteBatch.Begin();
 
             base.Draw(gameTime);
-            level.Draw(gameTime, _spriteBatch);
+            
+            level.Draw(gameTime, _spriteBatch, new Vector2(_camera.Transform.M41, _camera.Transform.M42));
+            DrawHud(_camera.Transform, level.Player.battery_duration);
             //_spriteBatch.Draw(createCircleText(50), level.Player.Position, Color.White);
             //player.Draw(gameTime, _spriteBatch);
             //shadow.Draw(gameTime, _spriteBatch);
@@ -104,6 +140,56 @@ namespace Rapid_Prototyping_T7
 
             _spriteBatch.End();
         }
+
+        private void DrawHud(Matrix transform, float batter_state)
+        {
+            //Rectangle titleSafeArea = GraphicsDevice.Viewport.TitleSafeArea;
+            Vector2 hudLocation = new Vector2(-transform.M41, -transform.M42);
+            //Vector2 center = new Vector2(titleSafeArea.X + titleSafeArea.Width / 2.0f,
+            //                             titleSafeArea.Y + titleSafeArea.Height / 2.0f);
+
+            Vector2 center = new Vector2(Constants.Constants.ScreenWidth / 2, Constants.Constants.ScreenHeight / 2);
+
+            // Draw score
+            string scoreString = "SCORE: " + level.Score.ToString();
+            DrawShadowedString(hudFont, scoreString, hudLocation, Color.Yellow);
+
+            // Draw Battery
+            float scoreHeight = hudFont.MeasureString(scoreString).Y;
+            string batteryString = "BatteryState:" + batter_state;
+            DrawShadowedString(hudFont, batteryString, hudLocation + new Vector2(0, scoreHeight * 1.2f), Color.Yellow);
+
+            //Draw Reset Tips
+            DrawShadowedString(hudFont, "Press 'R' to reset game", hudLocation + new Vector2(0, scoreHeight * 2.4f), Color.Yellow);
+
+            // Determine the status overlay message to show.
+            Texture2D status = null;
+
+            
+            if (!level.Player.IsAlive)
+            {
+                status = diedOverlay;
+            }
+            if (level.Player.IsAlive && level.ReachedExit)
+            {
+                status = winOverlay;
+            }
+
+            if (status != null)
+            {
+                // Draw status message.
+                Vector2 statusSize = new Vector2(status.Width, status.Height);
+                Vector2 statusPosition = new Vector2(center.X - (statusSize.X / 2) - transform.M41, center.Y - (statusSize.Y / 2) - transform.M42);
+                _spriteBatch.Draw(status, statusPosition, Color.White);
+            }
+        }
+
+        private void DrawShadowedString(SpriteFont font, string value, Vector2 position, Color color)
+        {
+            _spriteBatch.DrawString(font, value, position + new Vector2(1.0f, 1.0f), Color.Black);
+            _spriteBatch.DrawString(font, value, position, color);
+        }
+
         public void DrawCollisionLine(GraphicsDeviceManager mag, Rectangle rec, SpriteBatch spr, Vector2 origin)
         {
             DrawCollision col = new DrawCollision(mag, rec);
