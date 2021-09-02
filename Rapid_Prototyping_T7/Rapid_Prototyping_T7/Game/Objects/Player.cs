@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Content;
 
 namespace Rapid_Prototyping_T7.Game.Objects
 {
-    class Player : GameObject
+    public class Player : GameObject
     {
         public Vector2 velocity;
         public Vector2 Velocity
@@ -35,24 +35,12 @@ namespace Rapid_Prototyping_T7.Game.Objects
             shadow = in_shadow; 
         }
 
-        private float acceleration_horizontal = 2500f;
-        private float speed_decay_horizontal = 0.95f;
-        private float max_speed_horizontal = 250f;
-        private float min_speed_horizontal = 35f;
+        private static float acceleration_horizontal = 2500f;
+        private static float speed_decay_horizontal = 0.95f;
+        private static float max_speed_horizontal = 250f;
+        private static float min_speed_horizontal = 35f;
 
-        public float max_speed_vertical_up = 2000f;
-        public float max_speed_vertical_down = 3000f;
-        public float max_repulsion = 2500f;
-        public float repulse_force = 500000f;
-        public float attract_force = 250f;
-        public float acceleration_gravity = 10f;
-        public float distance_decay_exponant = 1.4f;
-
-        public float battery_duration = 0f;
-        public float battery_getCollected = 1f;
-        public float super_jump_force_multiplyer = 2f;
-
-        private Vector2 previous_position;
+        public Vector2 previous_position;
         public float scale = .08f;
 
         public bool IsOnGround
@@ -135,31 +123,16 @@ namespace Rapid_Prototyping_T7.Game.Objects
                     velocity.X = 0.0f;
                 }
             }
-            var distance_to_shadow = Vector2.Distance(position, shadow.Position);
-            if (kstate.IsKeyDown(Keys.Space))
-            {
-                var repulsion = -1 * repulse_force / MathF.Pow(distance_to_shadow, distance_decay_exponant) * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if (battery_duration > 0)
-                {
-                    repulsion *= super_jump_force_multiplyer;
-                    battery_duration -= 1 * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                    if (battery_duration < 0f)
-                        battery_duration = 0f;
-                }
-                velocity.Y += MathF.Max(repulsion, -max_repulsion);
-            }
-            else
-            {
-                velocity.Y += attract_force / MathF.Pow(distance_to_shadow, distance_decay_exponant) * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            }
-            velocity.Y += acceleration_gravity;
+
+            var distance = Vector2.Distance(position, shadow.position);
+            velocity.Y += Jump.GetVerticalVelocityChange(gameTime, distance);
             if (velocity.Y > 0)
             {
-                velocity.Y = MathF.Min(velocity.Y, max_speed_vertical_down);
+                velocity.Y = MathF.Min(velocity.Y, Jump.max_speed_vertical_down);
             }
             else
             {
-                velocity.Y = MathF.Max(velocity.Y, -max_speed_vertical_up);
+                velocity.Y = MathF.Max(velocity.Y, -Jump.max_speed_vertical_up);
             }
 
             // Move

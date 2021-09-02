@@ -132,7 +132,7 @@ namespace Rapid_Prototyping_T7
             base.Draw(gameTime);
             
             level.Draw(gameTime, _spriteBatch, new Vector2(_camera.Transform.M41, _camera.Transform.M42));
-            DrawHud(_camera.Transform, level.Player.battery_duration);
+            DrawHud(_camera.Transform, Jump.battery_duration);
             //_spriteBatch.Draw(createCircleText(50), level.Player.Position, Color.White);
             //player.Draw(gameTime, _spriteBatch);
             //shadow.Draw(gameTime, _spriteBatch);

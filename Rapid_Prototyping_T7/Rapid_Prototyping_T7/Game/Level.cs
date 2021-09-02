@@ -10,7 +10,7 @@ using System.Text;
 
 namespace Rapid_Prototyping_T7.Game
 {
-    class Level : IDisposable
+    public class Level : IDisposable
     {
         private Tile[,] tiles;
         private Texture2D[] layers;
@@ -287,7 +287,7 @@ namespace Rapid_Prototyping_T7.Game
             {
                 case PropType.Battery:
                     //To do(Get some ability)
-                    collectedBy.battery_duration = collectedBy.battery_getCollected;
+                    Jump.battery_duration = Jump.battery_getCollected;
                     break;
                 case PropType.Star:
                     score += prop.PointValue;

@@ -7,7 +7,7 @@ using System.Text;
 namespace Rapid_Prototyping_T7.Game
 {
 
-    enum TileCollision
+    public enum TileCollision
     {
         Passable = 0,      //can pass
         Impassable = 1,    //can not pass

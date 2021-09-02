@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Content;
 
 namespace Rapid_Prototyping_T7.Game.Objects
 {
-    class Shadow : GameObject
+    public class Shadow : GameObject
     {
         private Player player;
 
@@ -79,25 +79,16 @@ namespace Rapid_Prototyping_T7.Game.Objects
         public override void Update(GameTime gameTime)
         {
             previous_position = position;
-            var kstate = Keyboard.GetState();
-            var distance_to_player = Vector2.Distance(position, player.Position);
-            if (kstate.IsKeyDown(Keys.Space))
+
+            var distance = Vector2.Distance(player.previous_position, position);
+            velocity.Y -= Jump.GetVerticalVelocityChange(gameTime, distance);
+            if (velocity.Y < 0)
             {
-                var repulsion = -1 * player.repulse_force / MathF.Pow(distance_to_player, player.distance_decay_exponant) * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                velocity.Y -= MathF.Max(repulsion, -player.max_repulsion);
+                velocity.Y = MathF.Max(velocity.Y, -Jump.max_speed_vertical_down);
             }
             else
             {
-                velocity.Y -= player.attract_force / MathF.Pow(distance_to_player, player.distance_decay_exponant) * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            }
-            velocity.Y -= player.acceleration_gravity;
-            if (velocity.Y > 0)
-            {
-                velocity.Y = MathF.Min(velocity.Y, player.max_speed_vertical_up);
-            }
-            else
-            {
-                velocity.Y = MathF.Max(velocity.Y, -player.max_speed_vertical_down);
+                velocity.Y = MathF.Min(velocity.Y, Jump.max_speed_vertical_up);
             }
 
             // Move
