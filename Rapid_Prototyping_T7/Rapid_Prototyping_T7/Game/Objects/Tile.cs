@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -18,8 +18,8 @@ namespace Rapid_Prototyping_T7.Game
         public Texture2D Texture;
         public TileCollision Collision;
 
-        public const int Width = 32;
-        public const int Height = 32;
+        public const int Width = 64;
+        public const int Height = 64;
 
         public static readonly Vector2 Size = new Vector2(Width, Height);
 

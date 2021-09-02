@@ -90,6 +90,20 @@ namespace Rapid_Prototyping_T7.Game
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(texture, Position, null, Color.White, 0.0f, origin, 1.0f, SpriteEffects.None, 0.0f);
+
+            var rotation = 0f;
+            var depth = 0f;// (float)Layer.items;
+            float scale = 2.0f;
+            spriteBatch.Draw(texture,
+                Position,
+                null,
+                Color.White,
+                rotation,
+                origin,
+                scale,
+                SpriteEffects.None,
+                depth
+                );
         }
     }
 }

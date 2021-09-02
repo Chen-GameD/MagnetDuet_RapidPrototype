@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,7 +14,7 @@ namespace Rapid_Prototyping_T7.Game
         public static float max_speed_vertical_up = 2000f;
         public static float max_speed_vertical_down = 3000f;
         public static float max_repulsion = 2500f;
-        public static float repulse_force = 500000f;
+        public static float repulse_force = 500000f * 3;
         public static float attract_force = 250f;
         public static float acceleration_gravity = 10f;
         public static float distance_decay_exponant = 1.4f;

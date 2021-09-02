@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
@@ -35,13 +35,13 @@ namespace Rapid_Prototyping_T7.Game.Objects
             shadow = in_shadow; 
         }
 
-        private static float acceleration_horizontal = 2500f;
+        private static float acceleration_horizontal = 2500f * 2;
         private static float speed_decay_horizontal = 0.95f;
-        private static float max_speed_horizontal = 250f;
-        private static float min_speed_horizontal = 35f;
+        private static float max_speed_horizontal = 250f * 2;
+        private static float min_speed_horizontal = 35f * 2;
 
         public Vector2 previous_position;
-        public float scale = .08f;
+        public float scale = .32f;
 
         public bool IsOnGround
         {
@@ -53,7 +53,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
         {
             get
             {
-                int width = (int)(sprite.Width * scale);
+                int width = (int)(sprite.Width * scale * 0.8);
                 int height = (int)(sprite.Height * scale);
                 int left = (int)Math.Round(Position.X - (width / 2));
                 int top = (int)Math.Round(Position.Y - (height / 2));
