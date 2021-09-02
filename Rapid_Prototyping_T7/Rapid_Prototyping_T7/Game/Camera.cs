@@ -16,14 +16,14 @@ namespace Rapid_Prototyping_T7.Game
             private set;
         }
 
-        public void Follow(Player player)
+        public void Follow(Player player, Shadow shadow)
         {
             //var position = Matrix.CreateTranslation(
                 //-player.Position.X - (player.Rectangle.Width / 2),
                 //-player.Position.Y - (player.Rectangle.Height / 2),
                 //0);
 
-            var position = Matrix.CreateTranslation(-player.Position.X, -player.Position.Y, 0);
+            var position = Matrix.CreateTranslation(-((player.Position.X + shadow.position.X) / 2), -((player.Position.Y + shadow.position.Y) / 2), 0);
 
             var offset =  Matrix.CreateTranslation(
                 Constants.Constants.ScreenWidth / 2,

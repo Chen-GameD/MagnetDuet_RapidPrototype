@@ -78,7 +78,7 @@ namespace Rapid_Prototyping_T7
 
             // TODO: Add your update logic here
             level.Update(gameTime);
-            _camera.Follow(level.Player);
+            _camera.Follow(level.Player, level.Shadow);
             base.Update(gameTime);
             //player.Update(gameTime);
             //shadow.Update(gameTime);
@@ -97,10 +97,12 @@ namespace Rapid_Prototyping_T7
             // to get the player back to playing.
             if (resetPressed)
             {
-                if (!level.Player.IsAlive)
-                {
-                    level.StartNewLife();
-                }
+                level.StartNewLife();
+
+                //if (!level.Player.IsAlive)
+                //{
+                    //level.StartNewLife();
+                //}
             }
         }
 
@@ -128,8 +130,8 @@ namespace Rapid_Prototyping_T7
 
             base.Draw(gameTime);
             
-            level.Draw(gameTime, _spriteBatch);
-            DrawHud(_camera.Transform);
+            level.Draw(gameTime, _spriteBatch, new Vector2(_camera.Transform.M41, _camera.Transform.M42));
+            DrawHud(_camera.Transform, level.Player.battery_duration);
             //_spriteBatch.Draw(createCircleText(50), level.Player.Position, Color.White);
             //player.Draw(gameTime, _spriteBatch);
             //shadow.Draw(gameTime, _spriteBatch);
@@ -139,7 +141,7 @@ namespace Rapid_Prototyping_T7
             _spriteBatch.End();
         }
 
-        private void DrawHud(Matrix transform)
+        private void DrawHud(Matrix transform, float batter_state)
         {
             //Rectangle titleSafeArea = GraphicsDevice.Viewport.TitleSafeArea;
             Vector2 hudLocation = new Vector2(-transform.M41, -transform.M42);
@@ -149,7 +151,16 @@ namespace Rapid_Prototyping_T7
             Vector2 center = new Vector2(Constants.Constants.ScreenWidth / 2, Constants.Constants.ScreenHeight / 2);
 
             // Draw score
-            DrawShadowedString(hudFont, "SCORE: " + level.Score.ToString(), hudLocation, Color.Yellow);
+            string scoreString = "SCORE: " + level.Score.ToString();
+            DrawShadowedString(hudFont, scoreString, hudLocation, Color.Yellow);
+
+            // Draw Battery
+            float scoreHeight = hudFont.MeasureString(scoreString).Y;
+            string batteryString = "BatteryState:" + batter_state;
+            DrawShadowedString(hudFont, batteryString, hudLocation + new Vector2(0, scoreHeight * 1.2f), Color.Yellow);
+
+            //Draw Reset Tips
+            DrawShadowedString(hudFont, "Press 'R' to reset game", hudLocation + new Vector2(0, scoreHeight * 2.4f), Color.Yellow);
 
             // Determine the status overlay message to show.
             Texture2D status = null;
@@ -158,6 +169,10 @@ namespace Rapid_Prototyping_T7
             if (!level.Player.IsAlive)
             {
                 status = diedOverlay;
+            }
+            if (level.Player.IsAlive && level.ReachedExit)
+            {
+                status = winOverlay;
             }
 
             if (status != null)
