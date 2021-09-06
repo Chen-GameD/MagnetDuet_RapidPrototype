@@ -23,6 +23,10 @@ namespace Rapid_Prototyping_T7.Game
         public static float battery_getCollected = 5f;
         public static float super_jump_force_multiplyer = 1.5f;
 
+        public static float jump_stregnth_max = 1f;
+        public static float jump_stregnth_current = 0f;
+        public static float jump_stregnth_decay = 0.3f;
+
         public static float GetVerticalVelocityChange(GameTime gameTime, float distance)
         {
             Vector2 velocity = new Vector2(0, 0);
@@ -37,6 +41,10 @@ namespace Rapid_Prototyping_T7.Game
                     battery_duration -= 1 * (float)gameTime.ElapsedGameTime.TotalSeconds;
                     if (battery_duration < 0f)
                         battery_duration = 0f;
+                }
+                else
+                {
+                    repulsion *= jump_stregnth_current;
                 }
                 velocity.Y += MathF.Max(repulsion, -max_repulsion);
             }

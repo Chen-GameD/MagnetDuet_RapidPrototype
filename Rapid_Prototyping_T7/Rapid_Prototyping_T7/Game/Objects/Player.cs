@@ -48,7 +48,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
         private static float min_speed_horizontal = 35f * 2;
 
         public Vector2 previous_position;
-        public float scale = .32f;
+        public float scale = 2f;
 
         public bool IsOnGround
         {
@@ -119,7 +119,20 @@ namespace Rapid_Prototyping_T7.Game.Objects
         {
             previous_position = position;
 
+            if (IsOnGround || Jump.battery_duration > 0f)
+            {
+                Jump.jump_stregnth_current = Jump.jump_stregnth_max;
+            }
+            else
+            {
+                Jump.jump_stregnth_current -= Jump.jump_stregnth_current * Jump.jump_stregnth_decay * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+
             var kstate = Keyboard.GetState();
+            if (kstate.IsKeyDown(Keys.Space))
+            {
+                isOnGround = false;
+            }
 
             // Get player input
             if (kstate.IsKeyDown(Keys.Left) || kstate.IsKeyDown(Keys.A))
@@ -188,7 +201,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
             int bottomTile = (int)Math.Ceiling((((float)bounds.Bottom) / Tile.Height)) - 1;
 
             // Reset flag to search for ground collision.
-            isOnGround = false;
+            //isOnGround = false;
 
             // For each potentially colliding tile,
             for (int y = topTile; y <= bottomTile; ++y)
