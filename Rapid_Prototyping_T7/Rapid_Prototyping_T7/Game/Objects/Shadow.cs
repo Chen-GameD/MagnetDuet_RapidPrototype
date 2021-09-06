@@ -10,6 +10,12 @@ namespace Rapid_Prototyping_T7.Game.Objects
 {
     public class Shadow : GameObject
     {
+        private Animation idleAnimation;
+        private Animation walkAnimation;
+        private Animation jumpAnimation;
+        private AnimationPlayer anim_sprite;
+        private SpriteEffects flip = SpriteEffects.None;
+
         private Player player;
 
         public Vector2 velocity;
@@ -25,10 +31,10 @@ namespace Rapid_Prototyping_T7.Game.Objects
         {
             get
             {
-                int width = (int)(sprite.Width * player.scale);
-                int height = (int)(sprite.Height * player.scale);
+                int width = (int)(anim_sprite.Animation.FrameWidth * player.scale);
+                int height = (int)(anim_sprite.Animation.FrameWidth * player.scale);
                 int left = (int)Math.Round(Position.X - (width / 2));
-                int top = (int)Math.Round(Position.Y - (height / 2));
+                int top = (int)Math.Round(Position.Y - (height));
 
                 return new Rectangle(left, top, width, height);
             }
@@ -40,29 +46,44 @@ namespace Rapid_Prototyping_T7.Game.Objects
         }
         Level level;
 
+        public bool IsOnGround
+        {
+            get { return isOnGround; }
+        }
+        bool isOnGround;
+
         public Shadow(Level level, Vector2 in_position, Player in_player)
         {
             this.level = level;
             player = in_player;
             Initialize();
             LoadContent();
+
+            Reset(in_position);
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            var rotation = 0f;
-            var origin = new Vector2(sprite.Width / 2, sprite.Height / 2);
-            var depth = 0;
-            spriteBatch.Draw(sprite,
-                position,
-                null,
-                Color.Black,
-                rotation,
-                origin,
-                player.scale,
-                SpriteEffects.FlipVertically,
-                depth
-                );
+            //var rotation = 0f;
+            //var origin = new Vector2(sprite.Width / 2, sprite.Height / 2);
+            //var depth = 0;
+            //spriteBatch.Draw(sprite,
+            //    position,
+            //    null,
+            //    Color.Black,
+            //    rotation,
+            //    origin,
+            //    player.scale,
+            //    SpriteEffects.FlipVertically,
+            //    depth
+            //    );
+
+            if (player.Velocity.X < 0)
+                flip = SpriteEffects.FlipHorizontally;
+            else if (player.Velocity.X > 0)
+                flip = SpriteEffects.None;
+
+            anim_sprite.Draw(gameTime, spriteBatch, Position, flip, player.scale);
         }
 
         public override void Initialize()
@@ -74,6 +95,10 @@ namespace Rapid_Prototyping_T7.Game.Objects
         public override void LoadContent()
         {
             sprite = player.Level.Content.Load<Texture2D>("Sprites/Player/JohnnyGreenHead");
+
+            idleAnimation = new Animation(Level.Content.Load<Texture2D>("Sprites/Player/FlippedCharacterIdle"), 0.1f, true);
+            walkAnimation = new Animation(Level.Content.Load<Texture2D>("Sprites/Player/FlippedCharacterWalk"), 0.1f, true);
+            jumpAnimation = new Animation(Level.Content.Load<Texture2D>("Sprites/Player/FlippedCharacterIdle"), 0.1f, true);
         }
 
         public override void Update(GameTime gameTime)
@@ -91,6 +116,18 @@ namespace Rapid_Prototyping_T7.Game.Objects
                 velocity.Y = MathF.Min(velocity.Y, Jump.max_speed_vertical_up);
             }
 
+            if (player.IsAlive && isOnGround)
+            {
+                if (Math.Abs(player.Velocity.X) - 0.02f > 0)
+                {
+                    anim_sprite.PlayAnimation(walkAnimation);
+                }
+                else
+                {
+                    anim_sprite.PlayAnimation(idleAnimation);
+                }
+            }
+
             // Move
             position.Y += velocity.Y * (float)gameTime.ElapsedGameTime.TotalSeconds;
             position.X = player.Position.X;
@@ -106,6 +143,8 @@ namespace Rapid_Prototyping_T7.Game.Objects
             int rightTile = (int)Math.Ceiling(((float)bounds.Right / Tile.Width)) - 1;
             int topTile = (int)Math.Floor((float)bounds.Top / Tile.Height);
             int bottomTile = (int)Math.Ceiling(((float)bounds.Bottom / Tile.Height)) - 1;
+
+            isOnGround = false;
 
             // For each potentially colliding tile,
             for (int y = topTile; y <= bottomTile; ++y)
@@ -140,6 +179,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
                             }
                             else
                             {
+                                isOnGround = true;
                                 // Vertical collision
                                 velocity.Y = 0f;
                                 if (movement.Y > 0)
@@ -167,6 +207,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
             position = in_position;
             previous_position = in_position;
             velocity = Vector2.Zero;
+            anim_sprite.PlayAnimation(idleAnimation);
         }
     }
 }
