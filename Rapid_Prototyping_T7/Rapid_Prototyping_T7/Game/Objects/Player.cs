@@ -23,6 +23,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
             get { return velocity; }
             set { velocity = value; }
         }
+        public Boolean isInElctronicfield;
 
         public Level Level
         {
@@ -155,7 +156,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
             }
 
             var distance = Vector2.Distance(position, shadow.position);
-            velocity.Y += Jump.GetVerticalVelocityChange(gameTime, distance);
+            velocity.Y += Jump.GetVerticalVelocityChange(gameTime, distance, isInElctronicfield);
             if (velocity.Y > 0)
             {
                 velocity.Y = MathF.Min(velocity.Y, Jump.max_speed_vertical_down);
@@ -189,6 +190,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
 
             // Reset flag to search for ground collision.
             isOnGround = false;
+            isInElctronicfield = false;
 
             // For each potentially colliding tile,
             for (int y = topTile; y <= bottomTile; ++y)
@@ -238,6 +240,10 @@ namespace Rapid_Prototyping_T7.Game.Objects
                             // Perform further collisions with the new bounds.
                             bounds = BoundingRectangle;
 
+                        }
+                        else if (bounds.Intersects(tileBounds) && collision == TileCollision.ElectronicField)
+                        {
+                            isInElctronicfield = true;
                         }
                     }
                 }

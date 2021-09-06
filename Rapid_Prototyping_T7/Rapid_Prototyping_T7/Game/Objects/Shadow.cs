@@ -106,7 +106,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
             previous_position = position;
 
             var distance = Vector2.Distance(player.previous_position, position);
-            velocity.Y -= Jump.GetVerticalVelocityChange(gameTime, distance);
+            velocity.Y -= Jump.GetVerticalVelocityChange(gameTime, distance, player.isInElctronicfield);
             if (velocity.Y < 0)
             {
                 velocity.Y = MathF.Max(velocity.Y, -Jump.max_speed_vertical_down);

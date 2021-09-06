@@ -23,15 +23,15 @@ namespace Rapid_Prototyping_T7.Game
         public static float battery_getCollected = 5f;
         public static float super_jump_force_multiplyer = 1.5f;
 
-        public static float GetVerticalVelocityChange(GameTime gameTime, float distance)
+        public static float GetVerticalVelocityChange(GameTime gameTime, float distance, Boolean isInElectronicField = false)
         {
             Vector2 velocity = new Vector2(0, 0);
 
             var kstate = Keyboard.GetState();
-            if (kstate.IsKeyDown(Keys.Space))
+            if ((kstate.IsKeyDown(Keys.Space) && !isInElectronicField) || (!kstate.IsKeyDown(Keys.Space) && isInElectronicField))
             {
                 var repulsion = -1 * repulse_force / MathF.Pow(distance, distance_decay_exponant) * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if (battery_duration > 0)
+                if (battery_duration > 0 && !isInElectronicField)
                 {
                     repulsion *= super_jump_force_multiplyer;
                     battery_duration -= 1 * (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -40,7 +40,7 @@ namespace Rapid_Prototyping_T7.Game
                 }
                 velocity.Y += MathF.Max(repulsion, -max_repulsion);
             }
-            else
+            else if ((!kstate.IsKeyDown(Keys.Space) && !isInElectronicField) || (kstate.IsKeyDown(Keys.Space) && isInElectronicField))
             {
                 velocity.Y += attract_force / MathF.Pow(distance, distance_decay_exponant) * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }

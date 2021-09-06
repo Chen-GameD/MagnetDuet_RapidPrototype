@@ -137,7 +137,7 @@ namespace Rapid_Prototyping_T7.Game
 
                 // Electric field
                 case '%':
-                    return LoadVarietyTile("grid0", 1, TileCollision.Passable);
+                    return LoadVarietyTile("grid0", 1, TileCollision.ElectronicField);
 
                 //Blue moving platform
                 case '$':
