@@ -44,10 +44,10 @@ namespace Rapid_Prototyping_T7.Game
             angleLine_2 = (float)Math.Atan2(rectangle.Height, 0);
             angleLine_3 = (float)Math.Atan2(0, -rectangle.Width);
             angleLine_4 = (float)Math.Atan2(-rectangle.Height, 0);
-            line_1 = new Rectangle(rectangle.X - (int)origin.X, rectangle.Y - (int)origin.Y, rectangle.Width, 1);
-            line_2 = new Rectangle(rectangle.X - (int)origin.X + rectangle.Width, rectangle.Y - (int)origin.Y, rectangle.Height, 1);
-            line_3 = new Rectangle(rectangle.X - (int)origin.X + rectangle.Width, rectangle.Y - (int)origin.Y + rectangle.Height, rectangle.Width, 1);
-            line_4 = new Rectangle(rectangle.X - (int)origin.X, rectangle.Y + rectangle.Height - (int)origin.Y, rectangle.Height, 1);
+            line_1 = new Rectangle(rectangle.X, rectangle.Y, rectangle.Width, 1);
+            line_2 = new Rectangle(rectangle.X + rectangle.Width, rectangle.Y, rectangle.Height, 1);
+            line_3 = new Rectangle(rectangle.X + rectangle.Width, rectangle.Y + rectangle.Height, rectangle.Width, 1);
+            line_4 = new Rectangle(rectangle.X, rectangle.Y + rectangle.Height, rectangle.Height, 1);
         }
 
         public void Draw(SpriteBatch spriteBatch)

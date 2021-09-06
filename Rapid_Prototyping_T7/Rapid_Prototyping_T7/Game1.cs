@@ -6,6 +6,8 @@ using Rapid_Prototyping_T7.Game.Objects;
 using System.IO;
 using Microsoft.Xna.Framework.Content;
 using Rapid_Prototyping_T7.Constants;
+using Microsoft.Xna.Framework.Media;
+using System.Diagnostics;
 
 namespace Rapid_Prototyping_T7
 {
@@ -65,6 +67,17 @@ namespace Rapid_Prototyping_T7
             //Load Overlay
             winOverlay = Content.Load<Texture2D>("Overlays/you_win");
             diedOverlay = Content.Load<Texture2D>("Overlays/you_died");
+
+            //Load background music
+            try
+            {
+                MediaPlayer.IsRepeating = true;
+                MediaPlayer.Play(content.Load<Song>("Music/Background"));
+            }
+            catch
+            {
+                Trace.WriteLine("Background music cause an error!!!!");
+            }
 
             // TODO: use this.Content to load your game content here
             LoadNextLevel();
@@ -137,7 +150,7 @@ namespace Rapid_Prototyping_T7
             //player.Draw(gameTime, _spriteBatch);
             //shadow.Draw(gameTime, _spriteBatch);
 
-            //DrawCollisionLine(_graphics, level.Player.BoundingRectangle, _spriteBatch, new Vector2(level.Player.Sprite.Width / 2, level.Player.Sprite.Height));
+            DrawCollisionLine(_graphics, level.Player.BoundingRectangle, _spriteBatch, new Vector2(level.Player.Sprite.Width / 2, level.Player.Sprite.Height));
 
             _spriteBatch.End();
         }
@@ -156,9 +169,34 @@ namespace Rapid_Prototyping_T7
             DrawShadowedString(hudFont, scoreString, hudLocation, Color.Yellow);
 
             // Draw Battery
+            batteryHud = Content.Load<Texture2D>("Sprites/BatteryEmpty");
+            if (batter_state > 0)
+            {
+                batteryHud = Content.Load<Texture2D>("Sprites/BatteryFull");
+            } 
             float scoreHeight = hudFont.MeasureString(scoreString).Y;
-            string batteryString = "BatteryState:" + batter_state;
+            var rotation = 0f;
+            var origin = new Vector2(0, 0);
+            var depth = 0;
+            var scale = 0.25f;
+            string batteryString = "BatteryState:";
+            float batteryWidth = hudFont.MeasureString(batteryString).X;
             DrawShadowedString(hudFont, batteryString, hudLocation + new Vector2(0, scoreHeight * 1.2f), Color.Yellow);
+            _spriteBatch.Draw(batteryHud, hudLocation + new Vector2(batteryWidth + 10f, scoreHeight * 0.75f), null, Color.White, rotation, origin, scale, SpriteEffects.None, depth);
+
+            //(sprite,
+            //    position,
+            //    null,
+            //    Color.White,
+            //    rotation,
+            //    origin,
+            //    scale,
+            //    SpriteEffects.None,
+            //    depth
+            //    );
+
+            //string batteryString = "BatteryState:" + batter_state;
+            //DrawShadowedString(hudFont, batteryString, hudLocation + new Vector2(0, scoreHeight * 1.2f), Color.Yellow);
 
             //Draw Reset Tips
             DrawShadowedString(hudFont, "Press 'R' to reset game", hudLocation + new Vector2(0, scoreHeight * 2.4f), Color.Yellow);

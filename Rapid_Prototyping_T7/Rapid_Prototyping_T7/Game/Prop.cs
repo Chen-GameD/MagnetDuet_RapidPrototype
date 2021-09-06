@@ -14,8 +14,8 @@ namespace Rapid_Prototyping_T7.Game
 
     class Prop
     {
-        private Texture2D texture;
-        private Vector2 origin;
+        Animation propAnim;
+        AnimationPlayer animPlayer;
         private PropType type;
 
         public readonly int PointValue = 30;
@@ -64,14 +64,13 @@ namespace Rapid_Prototyping_T7.Game
             switch(Type)
             {
                 case PropType.Battery:
-                    texture = Level.Content.Load<Texture2D>("Sprites/Battery");
+                    propAnim = new Animation(Level.Content.Load<Texture2D>("Sprites/BatteryAnim"), 0.1f, true);
                     break;
                 case PropType.Star:
-                    texture = Level.Content.Load<Texture2D>("Sprites/Star");
+                    propAnim = new Animation(Level.Content.Load<Texture2D>("Sprites/diamond"), 0.1f, true);
                     break;
             }
-            
-            origin = new Vector2(texture.Width / 2.0f, texture.Height / 2.0f);
+            animPlayer.PlayAnimation(propAnim);
         }
 
         public void Update(GameTime gameTime)
@@ -84,12 +83,12 @@ namespace Rapid_Prototyping_T7.Game
             // Bounce along a sine curve over time.
             // Include the X coordinate so that neighboring gems bounce in a nice wave pattern.            
             double t = gameTime.TotalGameTime.TotalSeconds * BounceRate + Position.X * BounceSync;
-            bounce = (float)Math.Sin(t) * BounceHeight * texture.Height;
+            bounce = (float)Math.Sin(t) * BounceHeight * propAnim.FrameHeight;
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, Position, null, Color.White, 0.0f, origin, 1.0f, SpriteEffects.None, 0.0f);
+            animPlayer.Draw(gameTime, spriteBatch, Position, SpriteEffects.None);
         }
     }
 }

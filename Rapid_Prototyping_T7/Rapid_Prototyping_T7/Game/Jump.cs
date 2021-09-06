@@ -20,7 +20,7 @@ namespace Rapid_Prototyping_T7.Game
         public static float distance_decay_exponant = 1.4f;
 
         public static float battery_duration = 0f;
-        public static float battery_getCollected = 1f;
+        public static float battery_getCollected = 5f;
         public static float super_jump_force_multiplyer = 1.5f;
 
         public static float GetVerticalVelocityChange(GameTime gameTime, float distance)
