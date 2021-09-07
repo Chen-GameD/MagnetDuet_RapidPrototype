@@ -35,11 +35,29 @@
 #begin Levels/0.txt
 /copy:Levels/0.txt
 
-#begin Music/Background.wav
-/importer:WavImporter
+#begin Music/Background.mp3
+/importer:Mp3Importer
 /processor:SongProcessor
 /processorParam:Quality=Best
-/build:Music/Background.wav
+/build:Music/Background.mp3
+
+#begin Music/Collected.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/Collected.mp3
+
+#begin Music/Explosion.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/Explosion.mp3
+
+#begin Music/Win.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/Win.mp3
 
 #begin Overlays/you_died.png
 /importer:TextureImporter
@@ -149,6 +167,18 @@
 /processorParam:TextureFormat=Color
 /build:Sprites/Player/CharacterWalk.png
 
+#begin Sprites/Player/Explosion.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Sprites/Player/Explosion.png
+
 #begin Sprites/Player/FlippedCharacterIdle.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -208,6 +238,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Sprites/Star.png
+
+#begin Sprites/Tiles/ElectroField00.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Sprites/Tiles/ElectroField00.png
 
 #begin Sprites/Tiles/Exit.png
 /importer:TextureImporter
