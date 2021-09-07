@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using System.Diagnostics;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Rapid_Prototyping_T7.Game.Objects
 {
@@ -14,8 +15,12 @@ namespace Rapid_Prototyping_T7.Game.Objects
         //Animations
         private Animation idleAnimation;
         private Animation walkAnimation;
+        private Animation explosionAnimation;
         private AnimationPlayer anim_sprite;
         private SpriteEffects flip = SpriteEffects.None;
+
+        //Sounds
+        private SoundEffect killedSound;
 
         public Vector2 velocity;
         public Vector2 Velocity
@@ -23,6 +28,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
             get { return velocity; }
             set { velocity = value; }
         }
+        public Boolean isInElectronicField;
 
         public Level Level
         {
@@ -101,6 +107,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
                 flip = SpriteEffects.None;
 
             anim_sprite.Draw(gameTime, spriteBatch, Position, flip, scale);
+            
         }
 
         public override void Initialize()
@@ -113,6 +120,10 @@ namespace Rapid_Prototyping_T7.Game.Objects
             //Load animated textures
             idleAnimation = new Animation(Level.Content.Load<Texture2D>("Sprites/Player/CharacterIdle"), 0.1f, true);
             walkAnimation = new Animation(Level.Content.Load<Texture2D>("Sprites/Player/CharacterWalk"), 0.1f, true);
+            explosionAnimation = new Animation(Level.Content.Load<Texture2D>("Sprites/Player/Explosion"), 0.04f, false);
+
+            //Sounds
+            killedSound = level.Content.Load<SoundEffect>("Music/Explosion");
         }
 
         public override void Update(GameTime gameTime)
@@ -173,7 +184,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
             }
 
             var distance = Vector2.Distance(position, shadow.position);
-            velocity.Y += Jump.GetVerticalVelocityChange(gameTime, distance);
+            velocity.Y += Jump.GetVerticalVelocityChange(gameTime, distance, (isInElectronicField || shadow.isInElectronicField));
             if (velocity.Y > 0)
             {
                 velocity.Y = MathF.Min(velocity.Y, Jump.max_speed_vertical_down);
@@ -206,7 +217,8 @@ namespace Rapid_Prototyping_T7.Game.Objects
             int bottomTile = (int)Math.Ceiling(((float)bounds.Bottom) / Tile.Height) - 1;
 
             // Reset flag to search for ground collision.
-            //isOnGround = false;
+            isOnGround = false;
+            isInElectronicField = false;
 
             // For each potentially colliding tile,
             for (int y = topTile; y <= bottomTile; ++y)
@@ -257,6 +269,10 @@ namespace Rapid_Prototyping_T7.Game.Objects
                             bounds = BoundingRectangle;
 
                         }
+                        else if (bounds.Intersects(tileBounds) && collision == TileCollision.ElectronicField)
+                        {
+                            isInElectronicField = true;
+                        }
                     }
                 }
             }
@@ -267,6 +283,8 @@ namespace Rapid_Prototyping_T7.Game.Objects
         public void OnKilled()
         {
             isAlive = false;
+            killedSound.Play();
+            anim_sprite.PlayAnimation(explosionAnimation);
         }
 
         public void Reset(Vector2 in_position)

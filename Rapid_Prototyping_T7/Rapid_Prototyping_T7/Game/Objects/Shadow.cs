@@ -51,6 +51,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
             get { return isOnGround; }
         }
         bool isOnGround;
+        public Boolean isInElectronicField;
 
         public Shadow(Level level, Vector2 in_position, Player in_player)
         {
@@ -83,7 +84,8 @@ namespace Rapid_Prototyping_T7.Game.Objects
             else if (player.Velocity.X > 0)
                 flip = SpriteEffects.None;
 
-            anim_sprite.Draw(gameTime, spriteBatch, Position, flip, player.scale);
+            if(player.IsAlive)
+                anim_sprite.Draw(gameTime, spriteBatch, Position, flip, player.scale);
         }
 
         public override void Initialize()
@@ -106,7 +108,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
             previous_position = position;
 
             var distance = Vector2.Distance(player.previous_position, position);
-            velocity.Y -= Jump.GetVerticalVelocityChange(gameTime, distance);
+            velocity.Y -= Jump.GetVerticalVelocityChange(gameTime, distance, (player.isInElectronicField || isInElectronicField));
             if (velocity.Y < 0)
             {
                 velocity.Y = MathF.Max(velocity.Y, -Jump.max_speed_vertical_down);
@@ -145,6 +147,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
             int bottomTile = (int)Math.Ceiling(((float)bounds.Bottom / Tile.Height)) - 1;
 
             isOnGround = false;
+            isInElectronicField = false;
 
             // For each potentially colliding tile,
             for (int y = topTile; y <= bottomTile; ++y)
@@ -196,6 +199,10 @@ namespace Rapid_Prototyping_T7.Game.Objects
                             // Perform further collisions with the new bounds.
                             bounds = BoundingRectangle;
 
+                        }
+                        else if (bounds.Intersects(tileBounds) && collision == TileCollision.ElectronicField)
+                        {
+                            isInElectronicField = true;
                         }
                     }
                 }

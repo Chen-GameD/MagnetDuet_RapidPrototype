@@ -11,6 +11,7 @@ namespace Rapid_Prototyping_T7.Game
     {
         Passable = 0,      //can pass
         Impassable = 1,    //can not pass
+        ElectronicField = 2 // filp when in it
     }
 
     struct Tile

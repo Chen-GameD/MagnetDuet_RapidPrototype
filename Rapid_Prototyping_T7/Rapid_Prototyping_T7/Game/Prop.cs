@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using Rapid_Prototyping_T7.Game.Objects;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -17,6 +19,8 @@ namespace Rapid_Prototyping_T7.Game
         Animation propAnim;
         AnimationPlayer animPlayer;
         private PropType type;
+        private float scale;
+        private SoundEffect collectedSound;
 
         public readonly int PointValue = 30;
 
@@ -46,7 +50,7 @@ namespace Rapid_Prototyping_T7.Game
         {
             get
             {
-                return new Circle(Position, Tile.Width / 3.0f);
+                return new Circle(Position, Tile.Width * scale / 3.0f);
             }
         }
 
@@ -55,6 +59,14 @@ namespace Rapid_Prototyping_T7.Game
             this.level = level;
             this.basePosition = position;
             this.type = type;
+            if (type == PropType.Battery)
+            {
+                scale = 2f;
+            }
+            else if (type == PropType.Star)
+            {
+                scale = 1.2f;
+            }
 
             LoadContent();
         }
@@ -70,6 +82,7 @@ namespace Rapid_Prototyping_T7.Game
                     propAnim = new Animation(Level.Content.Load<Texture2D>("Sprites/diamond"), 0.1f, true);
                     break;
             }
+            collectedSound = Level.Content.Load<SoundEffect>("Music/Collected");
             animPlayer.PlayAnimation(propAnim);
         }
 
@@ -88,7 +101,12 @@ namespace Rapid_Prototyping_T7.Game
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            animPlayer.Draw(gameTime, spriteBatch, Position, SpriteEffects.None);
+            animPlayer.Draw(gameTime, spriteBatch, Position, SpriteEffects.None, scale);
+        }
+
+        public void OnCollected(Player collectedBy)
+        {
+            collectedSound.Play();
         }
     }
 }

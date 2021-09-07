@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Rapid_Prototyping_T7.Game.Objects;
@@ -19,6 +20,8 @@ namespace Rapid_Prototyping_T7.Game
 
         private List<Prop> props = new List<Prop>();
         private List<Prop> propsStore = new List<Prop>();
+
+        private SoundEffect exitReachedSound;
 
         // Level game state.
         private Random random = new Random(354668); // Arbitrary, but constant seed
@@ -77,6 +80,9 @@ namespace Rapid_Prototyping_T7.Game
                 int segmentIndex = levelIndex;
                 layers[i] = Content.Load<Texture2D>("Backgrounds/Layer" + i + "_" + segmentIndex);
             }
+
+            // Load sounds.
+            exitReachedSound = Content.Load<SoundEffect>("Music/Win");
         }
 
         private void LoadTiles(Stream fileStream)
@@ -137,7 +143,7 @@ namespace Rapid_Prototyping_T7.Game
 
                 // Electric field
                 case '%':
-                    return LoadVarietyTile("grid0", 1, TileCollision.Passable);
+                    return LoadVarietyTile("ElectroField0", 1, TileCollision.ElectronicField);
 
                 //Blue moving platform
                 case '$':
@@ -292,6 +298,8 @@ namespace Rapid_Prototyping_T7.Game
                     score += prop.PointValue;
                     break;
             }
+
+            prop.OnCollected(collectedBy);
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Vector2 camera_pos)
@@ -356,6 +364,7 @@ namespace Rapid_Prototyping_T7.Game
         private void OnExitReached()
         {
             reachedExit = true;
+            exitReachedSound.Play();
         }
 
         public void StartNewLife()
