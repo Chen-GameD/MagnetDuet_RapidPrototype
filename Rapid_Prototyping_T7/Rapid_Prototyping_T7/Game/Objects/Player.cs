@@ -48,7 +48,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
         private static float min_speed_horizontal = 35f * 2;
 
         public Vector2 previous_position;
-        public float scale = 2f;
+        public float scale = 1.9f;
 
         public bool IsOnGround
         {
@@ -198,7 +198,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
             int leftTile = (int)Math.Floor((float)bounds.Left / Tile.Width);
             int rightTile = (int)Math.Ceiling(((float)bounds.Right / Tile.Width)) - 1;
             int topTile = (int)Math.Floor((float)bounds.Top / Tile.Height);
-            int bottomTile = (int)Math.Ceiling((((float)bounds.Bottom) / Tile.Height)) - 1;
+            int bottomTile = (int)Math.Ceiling(((float)bounds.Bottom) / Tile.Height) - 1;
 
             // Reset flag to search for ground collision.
             //isOnGround = false;

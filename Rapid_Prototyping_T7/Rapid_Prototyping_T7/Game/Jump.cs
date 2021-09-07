@@ -11,13 +11,16 @@ namespace Rapid_Prototyping_T7.Game
 {
     public static class Jump
     {
-        public static float max_speed_vertical_up = 200f;
-        public static float max_speed_vertical_down = 3000f;
+        public static float max_speed_vertical_up = 1000f;
+        public static float max_speed_vertical_down = max_speed_vertical_up * 1000;
         public static float max_repulsion = 150f;
-        public static float repulse_force = 500000f * 10;
-        public static float attract_force = 250f;
+        public static float repulse_force = 500000f * 1000 * 1.5f;
+        public static float attract_force = repulse_force /2 ;
         public static float acceleration_gravity = 100f;
-        public static float distance_decay_exponant = 1.1f;
+        public static float distance_decay_exponant_repulsion = 2f;
+        public static float distance_decay_exponant_attraction = 3f;
+
+        public static float resistance = 0.5f;
 
         public static float battery_duration = 0f;
         public static float battery_getCollected = 5f;
@@ -25,7 +28,7 @@ namespace Rapid_Prototyping_T7.Game
 
         public static float jump_stregnth_max = 1f;
         public static float jump_stregnth_current = 0f;
-        public static float jump_stregnth_decay = 0.00000000001f;
+        public static float jump_stregnth_decay = 0.3f;
 
         public static float GetVerticalVelocityChange(GameTime gameTime, float distance)
         {
@@ -34,7 +37,7 @@ namespace Rapid_Prototyping_T7.Game
             var kstate = Keyboard.GetState();
             if (kstate.IsKeyDown(Keys.Space))
             {
-                var repulsion = -1 * repulse_force / MathF.Pow(distance, distance_decay_exponant) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                var repulsion = -1 * repulse_force / MathF.Pow(distance, distance_decay_exponant_repulsion) * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 if (battery_duration > 0)
                 {
                     repulsion *= super_jump_force_multiplyer;
@@ -50,9 +53,10 @@ namespace Rapid_Prototyping_T7.Game
             }
             else
             {
-                velocity.Y += attract_force / MathF.Pow(distance, distance_decay_exponant) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                velocity.Y += attract_force / MathF.Pow(distance, distance_decay_exponant_attraction) * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
             velocity.Y += acceleration_gravity;
+            velocity.Y -= resistance * velocity.Y * (float)gameTime.ElapsedGameTime.TotalSeconds;
             return velocity.Y;
         }
 
