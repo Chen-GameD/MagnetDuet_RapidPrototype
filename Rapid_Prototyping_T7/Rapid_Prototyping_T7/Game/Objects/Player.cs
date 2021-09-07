@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
@@ -43,13 +43,13 @@ namespace Rapid_Prototyping_T7.Game.Objects
             shadow = in_shadow; 
         }
 
-        private static float acceleration_horizontal = 2500f;
+        private static float acceleration_horizontal = 2500f * 2;
         private static float speed_decay_horizontal = 0.95f;
-        private static float max_speed_horizontal = 250f;
-        private static float min_speed_horizontal = 35f;
+        private static float max_speed_horizontal = 250f * 2 * .8f;
+        private static float min_speed_horizontal = 35f * 2;
 
         public Vector2 previous_position;
-        public float scale = 1f;
+        public float scale = 1.9f;
 
         public bool IsOnGround
         {
@@ -120,7 +120,25 @@ namespace Rapid_Prototyping_T7.Game.Objects
         {
             previous_position = position;
 
+            if (IsOnGround || Jump.battery_duration > 0f)
+            {
+                Jump.jump_stregnth_current = Jump.jump_stregnth_max;
+            }
+            else
+            {
+                Jump.jump_stregnth_current -= Jump.jump_stregnth_current * Jump.jump_stregnth_decay * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+
             var kstate = Keyboard.GetState();
+            if (kstate.IsKeyDown(Keys.Space))
+            {
+                isOnGround = false;
+            }
+
+            if (kstate.IsKeyDown(Keys.P))
+            {
+                Jump.battery_duration = Jump.battery_getCollected;
+            }
 
             // Get player input
             if (kstate.IsKeyDown(Keys.Left) || kstate.IsKeyDown(Keys.A))
@@ -186,7 +204,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
             int leftTile = (int)Math.Floor((float)bounds.Left / Tile.Width);
             int rightTile = (int)Math.Ceiling(((float)bounds.Right / Tile.Width)) - 1;
             int topTile = (int)Math.Floor((float)bounds.Top / Tile.Height);
-            int bottomTile = (int)Math.Ceiling((((float)bounds.Bottom) / Tile.Height)) - 1;
+            int bottomTile = (int)Math.Ceiling(((float)bounds.Bottom) / Tile.Height) - 1;
 
             // Reset flag to search for ground collision.
             isOnGround = false;

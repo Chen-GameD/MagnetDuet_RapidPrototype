@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Rapid_Prototyping_T7.Game.Objects;
@@ -262,7 +262,6 @@ namespace Rapid_Prototyping_T7.Game
                     OnExitReached();
                 }
             }
-            
         }
 
         private void UpdateProp(GameTime gameTime)
@@ -335,7 +334,20 @@ namespace Rapid_Prototyping_T7.Game
                     {
                         // Draw it in screen space.
                         Vector2 position = new Vector2(x, y) * Tile.Size;
-                        spriteBatch.Draw(texture, position, Color.White);
+                        float scale = 2.0f;
+                        var rotation = 0f;
+                        var origin = new Vector2(0,0);
+                        var depth = 0;// (float)Layer.level;
+                        spriteBatch.Draw(texture,
+                            position,
+                            null,
+                            Color.White,
+                            rotation,
+                            origin,
+                            scale,
+                            SpriteEffects.None,
+                            depth
+                            );
                     }
                 }
             }
