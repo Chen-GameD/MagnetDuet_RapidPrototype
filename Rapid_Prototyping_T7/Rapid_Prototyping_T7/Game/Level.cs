@@ -262,7 +262,6 @@ namespace Rapid_Prototyping_T7.Game
                     OnExitReached();
                 }
             }
-            
         }
 
         private void UpdateProp(GameTime gameTime)

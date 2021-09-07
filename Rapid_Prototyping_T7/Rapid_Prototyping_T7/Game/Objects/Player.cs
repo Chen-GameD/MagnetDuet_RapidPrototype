@@ -44,7 +44,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
 
         private static float acceleration_horizontal = 2500f * 2;
         private static float speed_decay_horizontal = 0.95f;
-        private static float max_speed_horizontal = 250f * 2;
+        private static float max_speed_horizontal = 250f * 2 * .8f;
         private static float min_speed_horizontal = 35f * 2;
 
         public Vector2 previous_position;
@@ -132,6 +132,11 @@ namespace Rapid_Prototyping_T7.Game.Objects
             if (kstate.IsKeyDown(Keys.Space))
             {
                 isOnGround = false;
+            }
+
+            if (kstate.IsKeyDown(Keys.P))
+            {
+                Jump.battery_duration = Jump.battery_getCollected;
             }
 
             // Get player input
