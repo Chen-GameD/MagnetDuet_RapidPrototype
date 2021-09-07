@@ -1,4 +1,5 @@
-# Rapid_Prototyping_T7
+# Magnet Duet
+Magnet Duet is a puzzle platformer where you overcome obsticals using your magnetic pair.
 
 ## Setup
 We followed this [guide](https://docs.monogame.net/articles/getting_started/1_setting_up_your_development_environment_windows.html) to setup our deveopment environment for windows.
