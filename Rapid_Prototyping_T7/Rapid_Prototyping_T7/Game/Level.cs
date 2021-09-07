@@ -1,22 +1,24 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Rapid_Prototyping_T7.Game.Objects;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
 namespace Rapid_Prototyping_T7.Game
 {
-    class Level : IDisposable
+    public class Level : IDisposable
     {
         private Tile[,] tiles;
         private Texture2D[] layers;
 
-        private const int EntityLayer = 2;
+        private const int EntityLayer = 0;
 
         private List<Prop> props = new List<Prop>();
+        private List<Prop> propsStore = new List<Prop>();
 
         // Level game state.
         private Random random = new Random(354668); // Arbitrary, but constant seed
@@ -41,11 +43,20 @@ namespace Rapid_Prototyping_T7.Game
         Shadow shadow;
         private Vector2 shadow_start;
 
+        public bool ReachedExit
+        {
+            get { return reachedExit; }
+        }
+        bool reachedExit;
+
         public int Score
         {
             get { return score; }
         }
         int score;
+
+        private Point exit = InvalidPosition;
+        private static readonly Point InvalidPosition = new Point(-1, -1);
 
         public Level(IServiceProvider serviceProvider, Stream fileStream, int levelIndex)
         {
@@ -60,7 +71,7 @@ namespace Rapid_Prototyping_T7.Game
 
             LoadTiles(fileStream);
 
-            layers = new Texture2D[3];
+            layers = new Texture2D[1];
             for (int i = 0; i < layers.Length; i++)
             {
                 int segmentIndex = levelIndex;
@@ -114,7 +125,7 @@ namespace Rapid_Prototyping_T7.Game
 
                 // Platform brick
                 case '#':
-                    return LoadVarietyTile("BlockA", 7, TileCollision.Impassable);
+                    return LoadVarietyTile("grid0", 1, TileCollision.Impassable);
 
                 // Battery Prop
                 case '@':
@@ -126,15 +137,16 @@ namespace Rapid_Prototyping_T7.Game
 
                 // Electric field
                 case '%':
-                    return LoadVarietyTile("BlockB", 2, TileCollision.Passable);
+                    return LoadVarietyTile("grid0", 1, TileCollision.Passable);
 
                 //Blue moving platform
                 case '$':
-                    return LoadVarietyTile("BlockB", 2, TileCollision.Passable);
+                    return new Tile(null, TileCollision.Passable);
+                    //return LoadVarietyTile("BlockB", 2, TileCollision.Passable);
 
                 // Final Platform
                 case '&':
-                    return LoadVarietyTile("BlockB", 2, TileCollision.Passable);
+                    return LoadExitTile(x, y);
 
                 // Player 1 player_start point
                 case '1':
@@ -164,8 +176,19 @@ namespace Rapid_Prototyping_T7.Game
         {
             Point position = GetBounds(x, y).Center;
             props.Add(new Prop(this, new Vector2(position.X, position.Y), type));
+            propsStore.Add(new Prop(this, new Vector2(position.X, position.Y), type));
 
             return new Tile(null, TileCollision.Passable);
+        }
+
+        private Tile LoadExitTile(int x, int y)
+        {
+            if (exit != InvalidPosition)
+                throw new NotSupportedException("A level may only have one exit.");
+
+            exit = GetBounds(x, y).Center;
+
+            return LoadTile("Exit", TileCollision.Passable);
         }
 
         private Tile LoadStartTile(int x, int y, int player_number)
@@ -230,8 +253,15 @@ namespace Rapid_Prototyping_T7.Game
         public void Update(GameTime gameTime)
         {
             UpdateProp(gameTime);
-            player.Update(gameTime);
-            shadow.Update(gameTime);
+            if (player.IsAlive && !ReachedExit)
+            {
+                player.Update(gameTime);
+                shadow.Update(gameTime);
+                if (player.BoundingRectangle.Contains(exit) || shadow.BoundingRectangle.Contains(exit))
+                {
+                    OnExitReached();
+                }
+            }
         }
 
         private void UpdateProp(GameTime gameTime)
@@ -242,11 +272,11 @@ namespace Rapid_Prototyping_T7.Game
 
                 prop.Update(gameTime);
 
-                //if (prop.BoundingCircle.Intersects(Player.BoundingRectanle))
-                //{
-                //props.RemoveAt(i--);
-                // OnPropCollected(prop, Player);
-                // }
+                if (prop.BoundingCircle.Intersects(Player.BoundingRectangle) || prop.BoundingCircle.Intersects(Shadow.BoundingRectangle))
+                {
+                    props.RemoveAt(i--);
+                    OnPropCollected(prop, Player);
+                }
             }
         }
 
@@ -256,7 +286,7 @@ namespace Rapid_Prototyping_T7.Game
             {
                 case PropType.Battery:
                     //To do(Get some ability)
-
+                    Jump.battery_duration = Jump.battery_getCollected;
                     break;
                 case PropType.Star:
                     score += prop.PointValue;
@@ -264,11 +294,12 @@ namespace Rapid_Prototyping_T7.Game
             }
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Vector2 camera_pos)
         {
+            Vector2 layerPos = -camera_pos;
             for (int i = 0; i <= EntityLayer; i++)
             {
-                spriteBatch.Draw(layers[i], Vector2.Zero, Color.White);
+                spriteBatch.Draw(layers[i], layerPos, Color.White);
             }
 
             DrawTiles(spriteBatch);
@@ -286,6 +317,8 @@ namespace Rapid_Prototyping_T7.Game
             player.Draw(gameTime, spriteBatch);
             shadow.Draw(gameTime, spriteBatch);
 
+            Trace.WriteLine(Score);
+
         }
 
         private void DrawTiles(SpriteBatch spriteBatch)
@@ -301,9 +334,44 @@ namespace Rapid_Prototyping_T7.Game
                     {
                         // Draw it in screen space.
                         Vector2 position = new Vector2(x, y) * Tile.Size;
-                        spriteBatch.Draw(texture, position, Color.White);
+                        float scale = 2.0f;
+                        var rotation = 0f;
+                        var origin = new Vector2(0,0);
+                        var depth = 0;// (float)Layer.level;
+                        spriteBatch.Draw(texture,
+                            position,
+                            null,
+                            Color.White,
+                            rotation,
+                            origin,
+                            scale,
+                            SpriteEffects.None,
+                            depth
+                            );
                     }
                 }
+            }
+        }
+
+        private void OnExitReached()
+        {
+            reachedExit = true;
+        }
+
+        public void StartNewLife()
+        {
+            reachedExit = false;
+            Player.Reset(player_start);
+            shadow.Reset(shadow_start);
+            ReloadProp();
+        }
+
+        private void ReloadProp()
+        {
+            props = new List<Prop>();
+            foreach(Prop prop in propsStore)
+            {
+                props.Add(prop);
             }
         }
     }

@@ -8,8 +8,14 @@ using Microsoft.Xna.Framework.Content;
 
 namespace Rapid_Prototyping_T7.Game.Objects
 {
-    class Shadow : GameObject
+    public class Shadow : GameObject
     {
+        private Animation idleAnimation;
+        private Animation walkAnimation;
+        private Animation jumpAnimation;
+        private AnimationPlayer anim_sprite;
+        private SpriteEffects flip = SpriteEffects.None;
+
         private Player player;
 
         public Vector2 velocity;
@@ -25,10 +31,10 @@ namespace Rapid_Prototyping_T7.Game.Objects
         {
             get
             {
-                int width = (int)(sprite.Width * player.scale);
-                int height = (int)(sprite.Height * player.scale);
+                int width = (int)(anim_sprite.Animation.FrameWidth * player.scale);
+                int height = (int)(anim_sprite.Animation.FrameWidth * player.scale);
                 int left = (int)Math.Round(Position.X - (width / 2));
-                int top = (int)Math.Round(Position.Y - (height / 2));
+                int top = (int)Math.Round(Position.Y - (height));
 
                 return new Rectangle(left, top, width, height);
             }
@@ -40,29 +46,44 @@ namespace Rapid_Prototyping_T7.Game.Objects
         }
         Level level;
 
+        public bool IsOnGround
+        {
+            get { return isOnGround; }
+        }
+        bool isOnGround;
+
         public Shadow(Level level, Vector2 in_position, Player in_player)
         {
             this.level = level;
             player = in_player;
             Initialize();
             LoadContent();
+
+            Reset(in_position);
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            var rotation = 0f;
-            var origin = new Vector2(sprite.Width / 2, sprite.Height / 2);
-            var depth = 0;
-            spriteBatch.Draw(sprite,
-                position,
-                null,
-                Color.Black,
-                rotation,
-                origin,
-                player.scale,
-                SpriteEffects.FlipVertically,
-                depth
-                );
+            //var rotation = 0f;
+            //var origin = new Vector2(sprite.Width / 2, sprite.Height / 2);
+            //var depth = 0;
+            //spriteBatch.Draw(sprite,
+            //    position,
+            //    null,
+            //    Color.Black,
+            //    rotation,
+            //    origin,
+            //    player.scale,
+            //    SpriteEffects.FlipVertically,
+            //    depth
+            //    );
+
+            if (player.Velocity.X < 0)
+                flip = SpriteEffects.FlipHorizontally;
+            else if (player.Velocity.X > 0)
+                flip = SpriteEffects.None;
+
+            anim_sprite.Draw(gameTime, spriteBatch, Position, flip, player.scale);
         }
 
         public override void Initialize()
@@ -73,31 +94,38 @@ namespace Rapid_Prototyping_T7.Game.Objects
 
         public override void LoadContent()
         {
-            sprite = player.Level.Content.Load<Texture2D>("Sprites/Player/Silhouette-Stick-Figure");
+            sprite = player.Level.Content.Load<Texture2D>("Sprites/Player/JohnnyGreenHead");
+
+            idleAnimation = new Animation(Level.Content.Load<Texture2D>("Sprites/Player/FlippedCharacterIdle"), 0.1f, true);
+            walkAnimation = new Animation(Level.Content.Load<Texture2D>("Sprites/Player/FlippedCharacterWalk"), 0.1f, true);
+            jumpAnimation = new Animation(Level.Content.Load<Texture2D>("Sprites/Player/FlippedCharacterIdle"), 0.1f, true);
         }
 
         public override void Update(GameTime gameTime)
         {
             previous_position = position;
-            var kstate = Keyboard.GetState();
-            var distance_to_player = Vector2.Distance(position, player.Position);
-            if (kstate.IsKeyDown(Keys.Space))
+
+            var distance = Vector2.Distance(player.previous_position, position);
+            velocity.Y -= Jump.GetVerticalVelocityChange(gameTime, distance);
+            if (velocity.Y < 0)
             {
-                var repulsion = -1 * player.repulse_force / MathF.Pow(distance_to_player, 1.5f) * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                velocity.Y -= MathF.Max(repulsion, -player.max_repulsion);
+                velocity.Y = MathF.Max(velocity.Y, -Jump.max_speed_vertical_down);
             }
             else
             {
-                velocity.Y -= player.attract_force / MathF.Pow(distance_to_player, 1.5f) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                velocity.Y = MathF.Min(velocity.Y, Jump.max_speed_vertical_up);
             }
-            velocity.Y -= player.acceleration_gravity;
-            if (velocity.Y > 0)
+
+            if (player.IsAlive && isOnGround)
             {
-                velocity.Y = MathF.Min(velocity.Y, player.max_speed_vertical_up);
-            }
-            else
-            {
-                velocity.Y = MathF.Max(velocity.Y, -player.max_speed_vertical_down);
+                if (Math.Abs(player.Velocity.X) - 0.02f > 0)
+                {
+                    anim_sprite.PlayAnimation(walkAnimation);
+                }
+                else
+                {
+                    anim_sprite.PlayAnimation(idleAnimation);
+                }
             }
 
             // Move
@@ -115,6 +143,8 @@ namespace Rapid_Prototyping_T7.Game.Objects
             int rightTile = (int)Math.Ceiling(((float)bounds.Right / Tile.Width)) - 1;
             int topTile = (int)Math.Floor((float)bounds.Top / Tile.Height);
             int bottomTile = (int)Math.Ceiling(((float)bounds.Bottom / Tile.Height)) - 1;
+
+            isOnGround = false;
 
             // For each potentially colliding tile,
             for (int y = topTile; y <= bottomTile; ++y)
@@ -149,6 +179,7 @@ namespace Rapid_Prototyping_T7.Game.Objects
                             }
                             else
                             {
+                                isOnGround = true;
                                 // Vertical collision
                                 velocity.Y = 0f;
                                 if (movement.Y > 0)
@@ -169,6 +200,14 @@ namespace Rapid_Prototyping_T7.Game.Objects
                     }
                 }
             }
+        }
+
+        public void Reset(Vector2 in_position)
+        {
+            position = in_position;
+            previous_position = in_position;
+            velocity = Vector2.Zero;
+            anim_sprite.PlayAnimation(idleAnimation);
         }
     }
 }

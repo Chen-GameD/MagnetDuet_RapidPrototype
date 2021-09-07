@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Rapid_Prototyping_T7.Game
 {
-    abstract class GameObject
+    public abstract class GameObject
     {
         protected Texture2D sprite;
         public Texture2D Sprite
